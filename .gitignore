@@ -130,3 +130,6 @@ dmypy.json
 
 # Pycharm config files
 .idea
+
+# excel file
+.xlsx
