@@ -132,4 +132,4 @@ dmypy.json
 .idea
 
 # excel file
-.xlsx
+*.xlsx
