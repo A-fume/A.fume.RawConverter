@@ -4,6 +4,7 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from src.repository.SQLUtil import SQLUtil
+from src.util.excelParser import ExcelColumn
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../.env'), verbose=True)
@@ -15,41 +16,41 @@ if __name__ == '__main__':
     base_columns = ['idx', '이름', '제품_영어_이름', '브랜드', '조향_스토리', '용량_가격', '부향률']
     columns = base_columns + ['탑노트', '미들 노트', '베이스 노트', '싱글 노트']
 
-    perfume_list = SQLUtil.instance().execute(sql='SELECT p.perfume_idx AS idx, '
-                                                  'p.name AS 이름,'
-                                                  'p.english_name AS 영어_이름, '
-                                                  'b.name AS 브랜드, '
-                                                  'p.image_url AS 향수_대표_이미지, '
+    perfume_list = SQLUtil.instance().execute(sql='SELECT p.perfume_idx AS {}, '.format(ExcelColumn.COL_IDX) +
+                                                  'p.name AS {},'.format(ExcelColumn.COL_NAME) +
+                                                  'p.english_name AS {},'.format(ExcelColumn.COL_ENGLISH_NAME) +
+                                                  'b.name AS {},'.format(ExcelColumn.COL_BRAND) +
+                                                  'p.image_url AS {},'.format(ExcelColumn.COL_MAIN_IMAGE) +
                                                   
-                                                  'pd.story AS 조향_스토리, '
-                                                  'pd.volume_and_price AS 용량_가격, '
-                                                  'pd.abundance_rate AS 부향률, '
+                                                  'pd.story AS {},'.format(ExcelColumn.COL_STORY) +
+                                                  'pd.volume_and_price AS {},'.format(ExcelColumn.COL_VOLUME_AND_PRICE) +
+                                                  'pd.abundance_rate AS {},'.format(ExcelColumn.COL_ABUNDANCE_RATE) +
 
                                                   '(SELECT GROUP_CONCAT(name) FROM notes AS n INNER JOIN ingredients '
                                                   'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
-                                                  'p.perfume_idx AND n.`type` = 1 ) AS 탑노트, '
+                                                  'p.perfume_idx AND n.`type` = 1 ) AS {},'.format(ExcelColumn.COL_TOP_NOTE) +
 
                                                   '(SELECT GROUP_CONCAT(name) FROM notes AS n INNER JOIN ingredients '
                                                   'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
-                                                  'p.perfume_idx AND n.`type` = 2 ) AS 미들노트, '
+                                                  'p.perfume_idx AND n.`type` = 2 ) AS {},'.format(ExcelColumn.COL_MIDDLE_NOTE) +
 
                                                   '(SELECT GROUP_CONCAT(name) FROM notes AS n INNER JOIN ingredients '
                                                   'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
-                                                  'p.perfume_idx AND n.`type` = 3 ) AS 베이스노트, '
+                                                  'p.perfume_idx AND n.`type` = 3 ) AS {},'.format(ExcelColumn.COL_BASE_NOTE) +
     
                                                   '(SELECT GROUP_CONCAT(name) FROM notes AS n INNER JOIN ingredients '
                                                   'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
-                                                  'p.perfume_idx AND n.`type` = 4 ) AS 싱글노트, '
+                                                  'p.perfume_idx AND n.`type` = 4 ) AS {},'.format(ExcelColumn.COL_SINGLE_NOTE) +
 
                                                   '(SELECT GROUP_CONCAT(k.name) FROM keywords AS k INNER JOIN '
                                                   'join_perfume_keywords AS jpk ON k.id = jpk.perfume_idx '
-                                                  'WHERE jpk.perfume_idx = p.perfume_idx) AS 키워드, ' 
+                                                  'WHERE jpk.perfume_idx = p.perfume_idx) AS {},'.format(ExcelColumn.COL_KEYWORD) +
 
-                                                  'IFNULL(pdr.rating, "") AS 별점_default, '
-                                                  'IFNULL(pdr.seasonal, "") AS `계절감_default_봄/여름/가을/겨울`, '
-                                                  'IFNULL(pdr.sillage, "") AS  `잔향감_default_가벼움/중간/무거움`, ' 
-                                                  'IFNULL(pdr.longevity, "") AS `지속감_default_매우약함/약함/보통/강함/매우강함`, '
-                                                  'IFNULL(pdr.gender, "") AS `성별감_default_남성/중성/여성`, '
+                                                  'IFNULL(pdr.rating, "") AS {},'.format(ExcelColumn.COL_DEFAULT_SCORE) +
+                                                  'IFNULL(pdr.seasonal, "") AS `{}`,'.format(ExcelColumn.COL_DEFAULT_SEASONAL) +
+                                                  'IFNULL(pdr.sillage, "") AS  `{}`,'.format(ExcelColumn.COL_DEFAULT_SILLAGE) +
+                                                  'IFNULL(pdr.longevity, "") AS `{}`,'.format(ExcelColumn.COL_DEFAULT_LONGEVITY) +
+                                                  'IFNULL(pdr.gender, "") AS `{}`,'.format(ExcelColumn.COL_DEFAULT_GENDER) +
                                                   
                                                   'AVG(r.score) AS `[평균점수]`, '
                                                   '(SELECT COUNT(lp.user_idx) FROM like_perfumes AS lp WHERE '
@@ -119,7 +120,7 @@ if __name__ == '__main__':
     result = pd.DataFrame(perfume_list)
     print(result)
 
-    file_nm = "{}_raw.xlsx".format(os.getenv('MYSQL_DB'))
+    file_nm = "../output/{}_raw.xlsx".format(os.getenv('MYSQL_DB'))
     xlxs_dir = os.path.join(BASE_DIR, file_nm)
 
     result.to_excel(xlxs_dir,
