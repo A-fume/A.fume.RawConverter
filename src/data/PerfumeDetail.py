@@ -13,9 +13,9 @@ class PerfumeDetail:
         if self.story is not None:
             json['story'] = self.story
         if self.volume_and_price is not None:
-            json['volumeAndPrice'] = self.volume_and_price
+            json['volume_and_price'] = self.volume_and_price
         if self.abundance_rate is not None:
-            json['abundanceRate'] = self.abundance_rate
+            json['abundance_rate'] = self.abundance_rate
         if len(json.keys()) == 1:
             return
         print(json)

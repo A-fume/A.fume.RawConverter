@@ -30,6 +30,9 @@ def get_changed_cell_value(row, idx):
     cell = row[idx]
     if cell.fill.start_color.rgb == '00000000':
         return None
+    if cell.fill.start_color.rgb == 'FFFFC000':
+        return cell.value
     if cell.fill.start_color.rgb != 'FFFFFF00':
         print("Un Expected Color :" + str(cell.fill.start_color.rgb))
+
     return cell.value

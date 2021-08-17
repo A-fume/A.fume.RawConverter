@@ -13,7 +13,7 @@ class Perfume:
         if self.name is not None:
             json['name'] = self.name
         if self.english_name is not None:
-            json['englishName'] = self.english_name
+            json['english_name'] = self.english_name
         if self.image_url is not None:
             json['image_url'] = self.image_url
         if len(json.keys()) == 1:

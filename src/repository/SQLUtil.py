@@ -1,6 +1,7 @@
 import pymysql
 import os
 
+
 class SQLUtil:
 
     def __init__(self):

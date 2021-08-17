@@ -38,5 +38,4 @@ class PerfumeDefaultReview:
                                     gender=gender)
 
     def __str__(self):
-        return 'PerfumeDefaultReview({}, {}, {}, {}, {}, {})'.format(self.idx, self.rating, self.seasonal, self.sillage,
-                                                                     self.longevity, self.gender)
+        return 'PerfumeDefaultReview({}, {}, {}, {}, {}, {})'.format(self.idx, self.rating, self.seasonal, self.sillage, self.longevity, self.gender)
