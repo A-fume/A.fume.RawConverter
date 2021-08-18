@@ -2,13 +2,19 @@ from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
 
 
 class PerfumeDetail:
+    TYPE_코롱 = 1
+    TYPE_오_드_코롱 = 2
+    TYPE_코롱_인텐스 = 3
+    TYPE_오_드_퍼퓸 = 4
+    TYPE_오_드_뚜왈렛 = 5
+
     def __init__(self, idx, story, volume_and_price, abundance_rate):
         self.idx = idx
         self.story = story
         self.volume_and_price = volume_and_price
         self.abundance_rate = abundance_rate
 
-    def update(self):
+    def get_json(self):
         json = {'idx': self.idx}
         if self.story is not None:
             json['story'] = self.story
@@ -18,7 +24,7 @@ class PerfumeDetail:
             json['abundance_rate'] = self.abundance_rate
         if len(json.keys()) == 1:
             return
-        print(json)
+        return json
 
     @staticmethod
     def create(row, column_list):

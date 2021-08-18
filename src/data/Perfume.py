@@ -8,7 +8,7 @@ class Perfume:
         self.english_name = english_name
         self.image_url = image_url
 
-    def update(self):
+    def get_json(self):
         json = {'idx': self.idx}
         if self.name is not None:
             json['name'] = self.name
@@ -18,7 +18,7 @@ class Perfume:
             json['image_url'] = self.image_url
         if len(json.keys()) == 1:
             return
-        print(json)
+        return json
 
     @staticmethod
     def create(row, column_list):

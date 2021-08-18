@@ -1,3 +1,4 @@
+import re
 from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
 
 
@@ -5,12 +6,21 @@ class PerfumeDefaultReview:
     def __init__(self, idx, rating, seasonal, sillage, longevity, gender):
         self.idx = idx
         self.rating = rating
+
+        if seasonal is not None and re.match(r'^\d+/\d+/\d+/\d+$', seasonal) is None:
+            raise RuntimeError("Invalid Seasonal format: " + seasonal)
         self.seasonal = seasonal
+        if sillage is not None and re.match(r'^\d+/\d+/\d+$', sillage) is None:
+            raise RuntimeError("Invalid Sillage format: " + sillage)
         self.sillage = sillage
+        if longevity is not None and re.match(r'^\d+/\d+/\d+/\d+/\d+$', longevity) is None:
+            raise RuntimeError("Invalid Longevity format: " + longevity)
         self.longevity = longevity
+        if gender is not None and re.match(r'^\d+/\d+/\d+$', gender) is None:
+            raise RuntimeError("Invalid Gender format: " + gender)
         self.gender = gender
 
-    def update(self):
+    def get_json(self):
         json = {'idx': self.idx}
         if self.rating is not None:
             json['rating'] = self.rating
@@ -24,7 +34,7 @@ class PerfumeDefaultReview:
             json['gender'] = self.gender
         if len(json.keys()) == 1:
             return
-        print(json)
+        return json
 
     @staticmethod
     def create(row, column_list):
@@ -38,4 +48,5 @@ class PerfumeDefaultReview:
                                     gender=gender)
 
     def __str__(self):
-        return 'PerfumeDefaultReview({}, {}, {}, {}, {}, {})'.format(self.idx, self.rating, self.seasonal, self.sillage, self.longevity, self.gender)
+        return 'PerfumeDefaultReview({}, {}, {}, {}, {}, {})'.format(self.idx, self.rating, self.seasonal, self.sillage,
+                                                                     self.longevity, self.gender)

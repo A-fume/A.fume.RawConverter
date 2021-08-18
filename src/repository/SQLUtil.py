@@ -3,14 +3,22 @@ import os
 
 
 class SQLUtil:
-
     def __init__(self):
         self.db = self.get_db()
         self.cursor = self.get_cursor(self.db)
+        self.logging = False
 
     def execute(self, sql):
-        self.cursor.execute(sql)
+        if self.logging:
+            print(sql)
+        result = self.cursor.execute(sql)
+        if self.logging:
+            print(result)
         return self.cursor.fetchall()
+
+    def commit(self):
+        self.db.commit()
+        return
 
     @staticmethod
     def get_db():
