@@ -14,10 +14,17 @@ class SQLUtil:
         result = self.cursor.execute(sql)
         if self.logging:
             print(result)
+        return result
+
+    def fetchall(self):
         return self.cursor.fetchall()
 
     def commit(self):
         self.db.commit()
+        return
+
+    def rollback(self):
+        self.db.rollback()
         return
 
     @staticmethod

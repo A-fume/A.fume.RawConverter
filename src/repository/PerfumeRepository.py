@@ -3,7 +3,6 @@ from src.data.PerfumeDefaultReview import PerfumeDefaultReview
 from src.data.PerfumeDetail import PerfumeDetail
 from src.repository.SQLUtil import SQLUtil
 
-is_debug = False
 
 def update_perfume(perfume):
     if not isinstance(perfume, Perfume):
@@ -17,11 +16,7 @@ def update_perfume(perfume):
     set_condition = ', '.join(['{} = "{}"'.format(it, json[it]) for it in json.keys()])
 
     sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
-    if is_debug:
-        print(sql)
-        return
-    result = SQLUtil.instance().execute(sql=sql)
-    print(result)
+    SQLUtil.instance().execute(sql=sql)
 
 
 def update_perfume_detail(perfume_detail):
@@ -32,16 +27,11 @@ def update_perfume_detail(perfume_detail):
     json = perfume_detail.get_json()
     if json is None:
         return
-
     json.pop('idx')
-    set_condition = ', '.join(['{} = "{}"'.format(it, json[it].replace('"', '""')) for it in json.keys()])
+    set_condition = ', '.join(['{} = "{}"'.format(it, str(json[it]).replace('"', '""')) for it in json.keys()])
 
     sql = 'UPDATE perfume_details SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
-    if is_debug:
-        print(sql)
-        return
-    result = SQLUtil.instance().execute(sql=sql)
-    print(result)
+    SQLUtil.instance().execute(sql=sql)
 
 
 def update_perfume_default_review(perfume_default_review):
@@ -57,15 +47,10 @@ def update_perfume_default_review(perfume_default_review):
     set_condition = ', '.join(['{} = "{}"'.format(it, json[it]) for it in json.keys()])
 
     sql = 'UPDATE perfume_default_reviews SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
-    if is_debug:
-        print(sql)
-        return
-    result = SQLUtil.instance().execute(sql=sql)
-    print(result)
+    SQLUtil.instance().execute(sql=sql)
 
 
-if __name__ == '__main__':
-    is_debug = True
+def main():
     from dotenv import load_dotenv
     import os
 
@@ -84,3 +69,9 @@ if __name__ == '__main__':
     testPerfumeDefaultReview = PerfumeDefaultReview(idx=1, rating=5.0, seasonal=None, sillage=None, longevity=None,
                                                     gender='2/2/2')
     update_perfume_default_review(testPerfumeDefaultReview)
+
+
+if __name__ == '__main__':
+    main()
+    SQLUtil.instance().rollback()
+

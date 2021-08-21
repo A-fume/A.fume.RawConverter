@@ -1,6 +1,3 @@
-from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
-
-
 class Note:
     TYPE_TOP = 1
     TYPE_MIDDLE = 2
