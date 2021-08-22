@@ -19,5 +19,11 @@ class Note:
             return
         print(json)
 
+    def __eq__(self, other):
+        return self.perfume_idx == other.perfume_idx and self.ingredient_idx == other.ingredient_idx and self.type == other.type
+
+    def __hash__(self):
+        return hash((self.perfume_idx, self.ingredient_idx, self.type))
+
     def __str__(self):
         return 'Note({}, {}, {})'.format(self.perfume_idx, self.ingredient_idx, self.type)
