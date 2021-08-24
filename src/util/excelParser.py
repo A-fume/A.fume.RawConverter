@@ -11,7 +11,7 @@ class ExcelColumn:
     COL_MIDDLE_NOTE = '미들노트'
     COL_BASE_NOTE = '베이스노트'
     COL_SINGLE_NOTE = '싱글노트'
-    COL_KEYWORD = '키워드'
+    COL_DEFAULT_KEYWORD = '키워드_default'
     COL_DEFAULT_SCORE = '별점_default'
     COL_DEFAULT_SEASONAL = '계절감_default_봄/여름/가을/겨울'
     COL_DEFAULT_SILLAGE = '잔향감_default_가벼움/중간/무거움'

@@ -3,6 +3,7 @@ import pandas as pd
 
 from dotenv import load_dotenv
 
+from src.repository.KeywordRepository import get_keyword_by_idx
 from src.repository.SQLUtil import SQLUtil
 from src.util.excelParser import ExcelColumn
 
@@ -43,10 +44,7 @@ def main():
                                    'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
                                    'p.perfume_idx AND n.`type` = 4 ) AS {},'.format(ExcelColumn.COL_SINGLE_NOTE) +
 
-                                   '(SELECT GROUP_CONCAT(k.name) FROM keywords AS k INNER JOIN '
-                                   'join_perfume_keywords AS jpk ON k.id = jpk.perfume_idx '
-                                   'WHERE jpk.perfume_idx = p.perfume_idx) AS {},'.format(ExcelColumn.COL_KEYWORD) +
-
+                                   'IFNULL(pdr.keyword, "") AS {},'.format(ExcelColumn.COL_DEFAULT_KEYWORD) +
                                    'IFNULL(pdr.rating, "") AS {},'.format(ExcelColumn.COL_DEFAULT_SCORE) +
                                    'IFNULL(pdr.seasonal, "") AS `{}`,'.format(ExcelColumn.COL_DEFAULT_SEASONAL) +
                                    'IFNULL(pdr.sillage, "") AS  `{}`,'.format(ExcelColumn.COL_DEFAULT_SILLAGE) +
@@ -103,6 +101,11 @@ def main():
                                    'AND gender = 2) AS `[성별감_중성]`, '
                                    '(SELECT COUNT(id) FROM reviews WHERE perfume_idx = p.perfume_idx '
                                    'AND gender = 3) AS `[성별감_여성]`, '
+                                   
+                                   '(SELECT GROUP_CONCAT(k.name) FROM keywords AS k INNER JOIN '
+                                   'join_perfume_keywords AS jpk ON k.id = jpk.perfume_idx '
+                                   'WHERE jpk.perfume_idx = p.perfume_idx) AS `[키워드]`,'
+                                   
                                    '" " AS `[국내 출시]` '
 
                                    'FROM perfumes AS p '
@@ -119,7 +122,12 @@ def main():
     perfume_list = SQLUtil.instance().fetchall()
 
     for perfume in perfume_list:
-        perfume['부향률'] = abundance_rate_arr[perfume['부향률']]
+        perfume[ExcelColumn.COL_ABUNDANCE_RATE] = abundance_rate_arr[perfume[ExcelColumn.COL_ABUNDANCE_RATE]]
+        print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
+        keyword_idx_list = list(filter(lambda x: len(x) > 0, perfume[ExcelColumn.COL_DEFAULT_KEYWORD].split(",")))
+        print(keyword_idx_list)
+        perfume[ExcelColumn.COL_DEFAULT_KEYWORD] = [get_keyword_by_idx(keyword_idx)['name'] for keyword_idx in keyword_idx_list]
+        print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
 
     result = pd.DataFrame(perfume_list)
     print(result)
