@@ -18,6 +18,9 @@ class ExcelColumn:
     COL_DEFAULT_LONGEVITY = '지속감_default_매우약함/약함/보통/강함/매우강함'
     COL_DEFAULT_GENDER = '성별감_default_남성/중성/여성'
 
+    COL_IMAGE_URL = '이미지'
+    COL_DESCRIPTION = '설명'
+
 
 def get_idx(columns_list, column):
     _idx = columns_list.index(column)
