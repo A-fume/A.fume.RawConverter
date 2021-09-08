@@ -34,4 +34,4 @@ def main():
 if __name__ == '__main__':
     SQLUtil.instance().logging = True
     main()
-    SQLUtil.instance().rollback()
+    SQLUtil.instance().commit()

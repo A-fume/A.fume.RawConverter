@@ -121,12 +121,12 @@ def main():
     for perfume in perfume_list:
         perfume[ExcelColumn.COL_ABUNDANCE_RATE] = PerfumeDetail.abundance_rate_list[
             perfume[ExcelColumn.COL_ABUNDANCE_RATE]]
-        print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
+        # print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
         keyword_idx_list = list(filter(lambda x: len(x) > 0, perfume[ExcelColumn.COL_DEFAULT_KEYWORD].split(",")))
-        print(keyword_idx_list)
+        # print(keyword_idx_list)
         perfume[ExcelColumn.COL_DEFAULT_KEYWORD] = ', '.join([get_keyword_by_idx(keyword_idx)['name'] for keyword_idx in
                                                     keyword_idx_list]) if len(keyword_idx_list) > 0 else ''
-        print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
+        # print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
 
     result = pd.DataFrame(perfume_list)
     print(result)
