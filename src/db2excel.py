@@ -21,9 +21,9 @@ def main():
                                    'b.name AS {},'.format(ExcelColumn.COL_BRAND) +
                                    'p.image_url AS {},'.format(ExcelColumn.COL_MAIN_IMAGE) +
 
-                                   'pd.story AS {},'.format(ExcelColumn.COL_STORY) +
-                                   'pd.volume_and_price AS {},'.format(ExcelColumn.COL_VOLUME_AND_PRICE) +
-                                   'pd.abundance_rate AS {},'.format(ExcelColumn.COL_ABUNDANCE_RATE) +
+                                   'p.story AS {},'.format(ExcelColumn.COL_STORY) +
+                                   'p.volume_and_price AS {},'.format(ExcelColumn.COL_VOLUME_AND_PRICE) +
+                                   'p.abundance_rate AS {},'.format(ExcelColumn.COL_ABUNDANCE_RATE) +
 
                                    '(SELECT GROUP_CONCAT(name) FROM notes AS n INNER JOIN ingredients '
                                    'AS i ON n.ingredient_idx = i.ingredient_idx WHERE n.perfume_idx = '
@@ -106,8 +106,6 @@ def main():
                                    '" " AS `[국내 출시]` '
 
                                    'FROM perfumes AS p '
-                                   'INNER JOIN perfume_details AS pd '
-                                   'ON p.perfume_idx = pd.perfume_idx '
                                    'INNER JOIN brands AS b '
                                    'ON p.brand_idx = b.brand_idx '
                                    'LEFT JOIN reviews AS r '
