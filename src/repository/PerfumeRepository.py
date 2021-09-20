@@ -12,7 +12,7 @@ def update_perfume(perfume):
     if json is None:
         return
     json.pop('idx')
-    set_condition = ', '.join(['{} = "{}"'.format(it, json[it]) for it in json.keys()])
+    set_condition = ', '.join(['{} = "{}"'.format(it, str(json[it]).replace('"', '""')) for it in json.keys()])
 
     sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
     SQLUtil.instance().execute(sql=sql)
@@ -46,9 +46,6 @@ def main():
     testPerfume = Perfume(idx=1, name='154 코롱 조말론 런던',
                           english_name='154 Cologne Jo Malone London for women and men', image_url=None)
     update_perfume(testPerfume)
-
-    testPerfumeDetail = PerfumeDetail(idx=1, story=None, abundance_rate=PerfumeDetail.TYPE_코롱, volume_and_price=None)
-    update_perfume_detail(testPerfumeDetail)
 
     testPerfumeDefaultReview = PerfumeDefaultReview(idx=1, rating=5.0, seasonal=None, sillage=None, longevity=None,
                                                     gender='2/2/2')
