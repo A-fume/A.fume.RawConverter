@@ -6,10 +6,9 @@ from dotenv import load_dotenv
 from src.data.Note import Note
 from src.data.Perfume import Perfume
 from src.data.PerfumeDefaultReview import PerfumeDefaultReview
-from src.data.PerfumeDetail import PerfumeDetail
 from src.repository.IngredientRepository import get_ingredient_idx_by_name
 from src.repository.NoteRepository import update_note_list
-from src.repository.PerfumeRepository import update_perfume_default_review, update_perfume, update_perfume_detail
+from src.repository.PerfumeRepository import update_perfume_default_review, update_perfume
 from src.repository.SQLUtil import SQLUtil
 from src.util.excelParser import get_changed_cell_value, get_idx, ExcelColumn
 
@@ -39,9 +38,6 @@ def main():
 
         perfume = Perfume.create(row, columns_list)
         update_perfume(perfume)
-
-        perfumeDetail = PerfumeDetail.create(row, columns_list)
-        update_perfume_detail(perfumeDetail)
 
         perfumeDefaultReview = PerfumeDefaultReview.create(row, columns_list)
         update_perfume_default_review(perfumeDefaultReview)

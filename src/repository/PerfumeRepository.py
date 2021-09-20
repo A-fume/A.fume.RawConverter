@@ -1,6 +1,5 @@
 from src.data.Perfume import Perfume
 from src.data.PerfumeDefaultReview import PerfumeDefaultReview
-from src.data.PerfumeDetail import PerfumeDetail
 from src.repository.SQLUtil import SQLUtil
 
 
@@ -14,21 +13,6 @@ def update_perfume(perfume):
         return
     json.pop('idx')
     set_condition = ', '.join(['{} = "{}"'.format(it, json[it]) for it in json.keys()])
-
-    sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
-    SQLUtil.instance().execute(sql=sql)
-
-
-def update_perfume_detail(perfume_detail):
-    if not isinstance(perfume_detail, PerfumeDetail):
-        raise RuntimeError("update_perfume(): only allow PerfumeDetail class as parameter")
-
-    perfume_idx = perfume_detail.idx
-    json = perfume_detail.get_json()
-    if json is None:
-        return
-    json.pop('idx')
-    set_condition = ', '.join(['{} = "{}"'.format(it, str(json[it]).replace('"', '""')) for it in json.keys()])
 
     sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
     SQLUtil.instance().execute(sql=sql)
