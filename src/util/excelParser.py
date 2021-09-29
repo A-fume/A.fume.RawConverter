@@ -20,6 +20,7 @@ class ExcelColumn:
 
     COL_IMAGE_URL = '이미지'
     COL_DESCRIPTION = '설명'
+    COL_FIRST_INITIAL = '시작 초성'
 
 
 def get_idx(columns_list, column):
