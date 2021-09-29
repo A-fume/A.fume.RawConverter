@@ -13,7 +13,7 @@ def get_ingredient_idx_by_name(name):
 
 def update_ingredient(ingredient):
     if not isinstance(ingredient, Ingredient):
-        raise RuntimeError("update_perfume(): only allow PerfumeDetail class as parameter")
+        raise RuntimeError("update_ingredient(): only allow Ingredient class as parameter")
 
     json = ingredient.get_json()
     if json is None:
