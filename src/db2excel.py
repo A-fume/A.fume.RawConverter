@@ -3,7 +3,7 @@ import pandas as pd
 
 from dotenv import load_dotenv
 
-from src.data.PerfumeDetail import PerfumeDetail
+from src.data.Perfume import Perfume
 from src.repository.KeywordRepository import get_keyword_by_idx
 from src.repository.SQLUtil import SQLUtil
 from src.util.excelParser import ExcelColumn
@@ -117,7 +117,7 @@ def main():
     perfume_list = SQLUtil.instance().fetchall()
 
     for perfume in perfume_list:
-        perfume[ExcelColumn.COL_ABUNDANCE_RATE] = PerfumeDetail.abundance_rate_list[
+        perfume[ExcelColumn.COL_ABUNDANCE_RATE] = Perfume.abundance_rate_list[
             perfume[ExcelColumn.COL_ABUNDANCE_RATE]]
         # print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
         keyword_idx_list = list(filter(lambda x: len(x) > 0, perfume[ExcelColumn.COL_DEFAULT_KEYWORD].split(",")))
