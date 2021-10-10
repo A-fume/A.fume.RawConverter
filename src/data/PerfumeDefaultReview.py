@@ -1,4 +1,6 @@
 import re
+
+from src.repository import KeywordRepository
 from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
 
 
@@ -48,6 +50,13 @@ class PerfumeDefaultReview:
         longevity = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_LONGEVITY))
         gender = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_GENDER))
         keyword = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_KEYWORD))
+        keyword_list = filter(lambda x: len(x) > 0, keyword.split(',') if keyword is not None else [])
+        for it in keyword_list:
+            if it.isnumeric():
+                KeywordRepository.get_keyword_by_idx(int(it))
+            else:
+                KeywordRepository.get_keyword_idx_by_name(it)
+        keyword = ",".join(keyword_list)
         return PerfumeDefaultReview(idx=idx, rating=rating, seasonal=seasonal, sillage=sillage, longevity=longevity,
                                     gender=gender, keyword=keyword)
 
