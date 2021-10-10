@@ -6,7 +6,7 @@ def get_keyword_idx_by_name(name):
     SQLUtil.instance().execute(sql=sql)
     result = SQLUtil.instance().fetchall()
     if len(result) == 0:
-        raise "Wrong keyword name:[{}]".format(name)
+        raise RuntimeError("Wrong keyword name:[{}]".format(name))
     return result[0]['id']
 
 
@@ -15,7 +15,7 @@ def get_keyword_by_idx(keyword_idx):
     SQLUtil.instance().execute(sql=sql)
     result = SQLUtil.instance().fetchall()
     if len(result) == 0:
-        raise "Wrong keyword idx:[{}]".format(keyword_idx)
+        raise RuntimeError("Wrong keyword idx:[{}]".format(keyword_idx))
     return result[0]
 
 

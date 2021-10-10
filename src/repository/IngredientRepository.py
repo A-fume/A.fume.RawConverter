@@ -7,7 +7,7 @@ def get_ingredient_idx_by_name(name):
     SQLUtil.instance().execute(sql=sql)
     result = SQLUtil.instance().fetchall()
     if len(result) == 0:
-        raise "Wrong Ingredient name:[{}]".format(name)
+        raise RuntimeError("Wrong Ingredient name:[{}]".format(name))
     return result[0]['ingredient_idx']
 
 
