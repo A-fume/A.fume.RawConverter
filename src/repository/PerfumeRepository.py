@@ -12,10 +12,11 @@ def update_perfume(perfume):
     if json is None:
         return
     json.pop('idx')
-    set_condition = ', '.join(['{} = "{}"'.format(it, str(json[it]).replace('"', '""')) for it in json.keys()])
+    set_condition = ', '.join(['{} = %s'.format(it) for it in json.keys()])
+    values = [json[it] for it in json.keys()]
 
     sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
-    SQLUtil.instance().execute(sql=sql)
+    SQLUtil.instance().execute(sql=sql, args=values)
 
 
 def update_perfume_default_review(perfume_default_review):

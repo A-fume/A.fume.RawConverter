@@ -8,10 +8,13 @@ class SQLUtil:
         self.cursor = self.get_cursor(self.db)
         self.logging = False
 
-    def execute(self, sql):
+    def execute(self, sql, args=None):
         if self.logging:
-            print(sql)
-        result = self.cursor.execute(sql)
+            print(sql + " // " + str(args))
+        if args is not None:
+            result = self.cursor.execute(sql, tuple(args))
+        else:
+            result = self.cursor.execute(sql)
         if self.logging:
             print(result)
         return result
