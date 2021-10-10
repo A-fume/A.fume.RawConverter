@@ -2,7 +2,7 @@ from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
 
 
 class Perfume:
-    abundance_rate_list = ['', '코롱', '오 드 코롱', '코롱 인텐스', '오 드 퍼퓸', '오 드 뚜왈렛']
+    abundance_rate_list = ['', '코롱', '오 드 코롱', '오 드 뚜왈렛', '오 드 퍼퓸', '퍼퓸', '기타']
 
     def __init__(self, idx, name, english_name, image_url, story, volume_and_price, abundance_rate):
         self.idx = idx
