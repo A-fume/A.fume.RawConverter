@@ -27,6 +27,9 @@ class Converter:
         result = pd.DataFrame(data_list)
         print(result)
 
+        if os.path.exists('../output') is False:
+            os.makedirs('../output')
+
         file_nm = "../../output/{}.xlsx".format(self.name)
         xlxs_dir = os.path.join(BASE_DIR, file_nm)
 
