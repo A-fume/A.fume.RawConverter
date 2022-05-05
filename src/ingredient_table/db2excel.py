@@ -3,8 +3,8 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 
-from src.repository.SQLUtil import SQLUtil
-from src.util.excelParser import ExcelColumn
+from src.common.repository.SQLUtil import SQLUtil
+from src.common.util.excelParser import ExcelColumn
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)

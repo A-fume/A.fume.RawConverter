@@ -1,5 +1,5 @@
-from src.data.Brand import Brand
-from src.repository.SQLUtil import SQLUtil
+from src.common.data.Brand import Brand
+from src.common.repository.SQLUtil import SQLUtil
 
 
 def update_brand(brand):
@@ -22,7 +22,7 @@ def main():
     import os
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
 
     SQLUtil.instance().logging = True
 

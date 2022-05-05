@@ -2,9 +2,9 @@ import os
 
 from dotenv import load_dotenv
 
-from src.data.Perfume import Perfume
-from src.repository.PerfumeRepository import update_perfume
-from src.repository.SQLUtil import SQLUtil
+from src.common.data.Perfume import Perfume
+from src.common.repository.PerfumeRepository import update_perfume
+from src.common.repository.SQLUtil import SQLUtil
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)

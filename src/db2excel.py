@@ -3,10 +3,10 @@ import pandas as pd
 
 from dotenv import load_dotenv
 
-from src.data.Perfume import Perfume
-from src.repository.KeywordRepository import get_keyword_by_idx
-from src.repository.SQLUtil import SQLUtil
-from src.util.excelParser import ExcelColumn
+from src.common.data.Perfume import Perfume
+from src.common.repository.KeywordRepository import get_keyword_by_idx
+from src.common.repository.SQLUtil import SQLUtil
+from src.common.util.excelParser import ExcelColumn
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../.env'), verbose=True)

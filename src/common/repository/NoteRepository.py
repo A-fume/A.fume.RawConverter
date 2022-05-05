@@ -1,5 +1,5 @@
-from src.data.Note import Note
-from src.repository.SQLUtil import SQLUtil
+from src.common.data.Note import Note
+from src.common.repository.SQLUtil import SQLUtil
 
 
 def get_note_list_by_perfume_idx(perfume_idx, note_type):
@@ -60,7 +60,7 @@ def main():
     import os
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
 
     SQLUtil.instance().logging = True
 

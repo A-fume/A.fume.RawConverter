@@ -1,4 +1,4 @@
-from src.util.excelParser import get_idx, get_changed_cell_value, ExcelColumn
+from src.common.util.excelParser import get_idx, get_changed_cell_value, ExcelColumn
 
 
 class Brand:

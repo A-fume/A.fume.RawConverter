@@ -1,7 +1,7 @@
 import re
 
-from src.repository import KeywordRepository
-from src.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
+from src.common.repository import KeywordRepository
+from src.common.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
 
 
 class PerfumeDefaultReview:

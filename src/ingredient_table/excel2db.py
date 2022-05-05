@@ -3,9 +3,9 @@ import os
 import openpyxl
 from dotenv import load_dotenv
 
-from src.data.Ingredient import Ingredient
-from src.repository.IngredientRepository import update_ingredient
-from src.repository.SQLUtil import SQLUtil
+from src.common.data.Ingredient import Ingredient
+from src.common.repository.IngredientRepository import update_ingredient
+from src.common.repository.SQLUtil import SQLUtil
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
