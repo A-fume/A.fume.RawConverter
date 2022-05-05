@@ -1,5 +1,5 @@
 import os
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
 
 import openpyxl
 import pandas as pd
@@ -9,7 +9,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
 
 
-class Converter:
+class Converter(metaclass=ABCMeta):
     def __init__(self, name):
         self.name = name
 
@@ -52,3 +52,11 @@ class Converter:
 
         excel_file = openpyxl.load_workbook(xlxs_dir)
         self.update_excel(excel_file)
+
+    def do_command(self, command_str):
+        if command_str == "db2excel":
+            self.db2excel()
+        elif command_str == "excel2db":
+            self.excel2db()
+        else:
+            raise RuntimeError('Unknown Command')
