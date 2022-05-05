@@ -21,6 +21,8 @@ class ExcelColumn:
     COL_IMAGE_URL = '이미지'
     COL_DESCRIPTION = '설명'
     COL_FIRST_INITIAL = '시작 초성'
+    COL_SERIES_IDX = "계열_id"
+    COL_SERIES_NAME = "계열_이름"
 
 
 def get_idx(columns_list, column):
