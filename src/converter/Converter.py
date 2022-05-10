@@ -5,6 +5,8 @@ import openpyxl
 import pandas as pd
 from dotenv import load_dotenv
 
+from src.common.repository.SQLUtil import SQLUtil
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
 
@@ -54,9 +56,11 @@ class Converter(metaclass=ABCMeta):
         self.update_excel(excel_file)
 
     def do_command(self, command_str):
+        SQLUtil.instance().logging = True
         if command_str == "db2excel":
             self.db2excel()
         elif command_str == "excel2db":
             self.excel2db()
+            SQLUtil.instance().commit()
         else:
             raise RuntimeError('Unknown Command')
