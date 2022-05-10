@@ -15,6 +15,11 @@ converter_map: Dict[str, Converter] = {
 
 
 def main(name, command_str):
+    if '*' == name:
+        for key in converter_map.keys():
+            converter_map[key].do_command(command_str)
+        return
+
     converter = converter_map[name]
     converter.do_command(command_str)
 

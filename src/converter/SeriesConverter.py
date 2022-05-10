@@ -1,7 +1,7 @@
 import os
 
 from src.common.repository.SQLUtil import SQLUtil
-from src.common.util.excelParser import ExcelColumn
+from src.common.util.ExcelParser import ExcelColumn
 from src.converter.Converter import Converter
 
 

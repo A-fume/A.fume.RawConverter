@@ -1,6 +1,3 @@
-from src.common.util.excelParser import get_idx, get_changed_cell_value, ExcelColumn
-
-
 class Ingredient:
 
     def __init__(self, ingredient_idx, name, english_name, description, image_url):
@@ -30,16 +27,6 @@ class Ingredient:
                and self.english_name == other.english_name \
                and self.description == other.description \
                and self.image_url == other.image_url
-
-    @staticmethod
-    def create(row, column_list):
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        name = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_NAME))
-        english_name = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_ENGLISH_NAME))
-        description = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DESCRIPTION))
-        image_url = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_IMAGE_URL))
-        return Ingredient(ingredient_idx=idx, name=name, english_name=english_name, description=description,
-                          image_url=image_url)
 
     def __hash__(self):
         return hash((self.ingredient_idx, self.name, self.english_name, self.description, self.image_url))

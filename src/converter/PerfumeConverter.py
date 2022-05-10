@@ -2,50 +2,22 @@ import os
 
 from src.common.data.Note import Note
 from src.common.data.Perfume import Perfume
-from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview
-from src.common.repository.IngredientRepository import get_ingredient_idx_by_name
 from src.common.repository.KeywordRepository import get_keyword_by_idx
 from src.common.repository.NoteRepository import update_note_list
 from src.common.repository.PerfumeRepository import update_perfume_default_review, update_perfume
 from src.common.repository.SQLUtil import SQLUtil
-from src.common.util.excelParser import ExcelColumn, get_changed_cell_value, get_idx
+from src.common.util.ExcelParser import ExcelColumn, ExcelParser
 from src.converter.Converter import Converter
 
 
-def parse_note_str(note_str, perfume_idx, note_type):
-    note_list = []
-
-    ingredient_list = [it.strip() for it in note_str.split(',')]
-
-    for ingredient_name in ingredient_list:
-        ingredient_idx = get_ingredient_idx_by_name(ingredient_name)
-        note_list.append(Note(perfume_idx=perfume_idx, ingredient_idx=ingredient_idx, type=note_type))
-
-    return note_list
-
-
 def update_note(row, column_list):
-    perfume_idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
+    perfume_idx = row[ExcelParser.get_idx(column_list, ExcelColumn.COL_IDX)].value
+    top_note_list, middle_note_list, single_note_list, base_note_list = ExcelParser.get_note_list(row, column_list)
 
-    top_note_str = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_TOP_NOTE))
-    if top_note_str is not None:
-        top_note_list = parse_note_str(top_note_str, perfume_idx, Note.TYPE_TOP)
-        update_note_list(perfume_idx=perfume_idx, update_list=top_note_list, note_type=Note.TYPE_TOP)
-
-    middle_note_str = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_MIDDLE_NOTE))
-    if middle_note_str is not None:
-        middle_note_list = parse_note_str(middle_note_str, perfume_idx, Note.TYPE_MIDDLE)
-        update_note_list(perfume_idx=perfume_idx, update_list=middle_note_list, note_type=Note.TYPE_MIDDLE)
-
-    base_note_str = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_BASE_NOTE))
-    if base_note_str is not None:
-        base_note_list = parse_note_str(base_note_str, perfume_idx, Note.TYPE_BASE)
-        update_note_list(perfume_idx=perfume_idx, update_list=base_note_list, note_type=Note.TYPE_BASE)
-
-    single_note_str = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_SINGLE_NOTE))
-    if single_note_str is not None:
-        single_note_list = parse_note_str(single_note_str, perfume_idx, Note.TYPE_SINGLE)
-        update_note_list(perfume_idx=perfume_idx, update_list=single_note_list, note_type=Note.TYPE_SINGLE)
+    update_note_list(perfume_idx=perfume_idx, update_list=top_note_list, note_type=Note.TYPE_TOP)
+    update_note_list(perfume_idx=perfume_idx, update_list=middle_note_list, note_type=Note.TYPE_MIDDLE)
+    update_note_list(perfume_idx=perfume_idx, update_list=base_note_list, note_type=Note.TYPE_BASE)
+    update_note_list(perfume_idx=perfume_idx, update_list=single_note_list, note_type=Note.TYPE_SINGLE)
 
     return
 
@@ -182,10 +154,10 @@ class PerfumeConverter(Converter):
                 break
             i += 1
 
-            perfume = Perfume.create(row, columns_list)
+            perfume = ExcelParser.get_perfume(row, columns_list)
             update_perfume(perfume)
 
-            perfumeDefaultReview = PerfumeDefaultReview.create(row, columns_list)
+            perfumeDefaultReview = ExcelParser.get_perfumeDefaultReview(row, columns_list)
             update_perfume_default_review(perfumeDefaultReview)
 
             update_note(row, columns_list)

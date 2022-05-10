@@ -4,7 +4,7 @@ from src.common.data.Brand import Brand
 from src.common.repository.BrandRepository import update_brand
 from src.converter.Converter import Converter
 from src.common.repository.SQLUtil import SQLUtil
-from src.common.util.excelParser import ExcelColumn
+from src.common.util.ExcelParser import ExcelColumn, ExcelParser
 
 
 class BrandConverter(Converter):
@@ -32,6 +32,6 @@ class BrandConverter(Converter):
             filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
             if len(filtered) == 0:
                 break
-            brand = Brand.create(row, columns_list)
+            brand = ExcelParser.get_brand(row, columns_list)
             update_brand(brand)
             i += 1

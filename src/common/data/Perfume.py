@@ -1,6 +1,3 @@
-from src.common.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
-
-
 class Perfume:
     abundance_rate_list = ['', '코롱', '오 드 코롱', '오 드 뚜왈렛', '오 드 퍼퓸', '퍼퓸', '기타']
 
@@ -30,22 +27,6 @@ class Perfume:
         if len(json.keys()) == 1:
             return
         return json
-
-    @staticmethod
-    def create(row, column_list):
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        name = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_NAME))
-        english_name = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_ENGLISH_NAME))
-        image_url = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_MAIN_IMAGE))
-        story = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_STORY))
-        volume_and_price = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_VOLUME_AND_PRICE))
-        abundance_rate_str = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_ABUNDANCE_RATE))
-        abundance_rate = Perfume.abundance_rate_list.index(
-            abundance_rate_str) if abundance_rate_str is not None else None
-        if abundance_rate == -1:
-            raise RuntimeError("abundance_rate_str is not invalid: " + abundance_rate_str)
-        return Perfume(idx=idx, name=name, english_name=english_name, image_url=image_url, story=story,
-                       volume_and_price=volume_and_price, abundance_rate=abundance_rate)
 
     def __str__(self):
         return 'Perfume({}, {}, {}, {}, {}, {}, {})'.format(self.idx, self.name, self.english_name, self.image_url,

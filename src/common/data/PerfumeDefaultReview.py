@@ -1,8 +1,5 @@
 import re
 
-from src.common.repository import KeywordRepository
-from src.common.util.excelParser import ExcelColumn, get_idx, get_changed_cell_value
-
 
 class PerfumeDefaultReview:
     def __init__(self, idx, rating, seasonal, sillage, longevity, gender, keyword):
@@ -40,26 +37,6 @@ class PerfumeDefaultReview:
         if len(json.keys()) == 1:
             return
         return json
-
-    @staticmethod
-    def create(row, column_list):
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        rating = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_SCORE))
-        seasonal = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_SEASONAL))
-        sillage = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_SILLAGE))
-        longevity = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_LONGEVITY))
-        gender = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_GENDER))
-        keyword = get_changed_cell_value(row, get_idx(column_list, ExcelColumn.COL_DEFAULT_KEYWORD))
-        if keyword is not None:
-            keyword_list = list(filter(lambda x: len(x) > 0, keyword.split(',')) if keyword is not None else [])
-            for it in keyword_list:
-                if it.isnumeric():
-                    KeywordRepository.get_keyword_by_idx(int(it))
-                else:
-                    KeywordRepository.get_keyword_idx_by_name(it)
-            keyword = ",".join(keyword_list)
-        return PerfumeDefaultReview(idx=idx, rating=rating, seasonal=seasonal, sillage=sillage, longevity=longevity,
-                                    gender=gender, keyword=keyword)
 
     def __str__(self):
         return 'PerfumeDefaultReview({}, {}, {}, {}, {}, {}, {})'.format(self.idx, self.rating, self.seasonal,
