@@ -11,6 +11,7 @@ class SeriesConverter(Converter):
 
     def __init__(self):
         super().__init__("{}_series_raw".format(os.getenv('MYSQL_DB')))
+        self.parser = None
 
     def get_data_list(self):
         SQLUtil.instance().execute(
@@ -21,11 +22,8 @@ class SeriesConverter(Converter):
 
         return SQLUtil.instance().fetchall()
 
-    def update_excel(self, excel_file):
-        sheet1 = excel_file.active
-        columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
-
-        parser = ExcelParser(columns_list, {
+    def prepare_parser(self, columns_list):
+        self.parser = ExcelParser(columns_list, {
             'series_idx': ExcelColumn.COL_IDX,
             'name': ExcelColumn.COL_NAME,
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
@@ -35,14 +33,6 @@ class SeriesConverter(Converter):
                                       english_name=result_json['english_name'], image_url=result_json['image_url'],
                                       description=result_json['description']))
 
-        i = 3
-        while True:
-            row = sheet1['A{}:AK{}'.format(i, i)][0]
-
-            filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
-            if len(filtered) == 0:
-                break
-            i += 1
-            series = parser.parse(row)
-            update_series(series)
-        pass
+    def read_line(self, row):
+        series = self.parser.parse(row)
+        update_series(series)

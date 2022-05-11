@@ -11,6 +11,7 @@ class IngredientConverter(Converter):
 
     def __init__(self):
         super().__init__("{}_ingredients_raw".format(os.getenv('MYSQL_DB')))
+        self.parser = None
 
     def get_data_list(self):
         SQLUtil.instance().execute(
@@ -23,10 +24,8 @@ class IngredientConverter(Converter):
 
         return SQLUtil.instance().fetchall()
 
-    def update_excel(self, excel_file):
-        sheet1 = excel_file.active
-        columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
-        parser = ExcelParser(columns_list=columns_list, column_dict={
+    def prepare_parser(self, columns_list):
+        self.parser = ExcelParser(columns_list=columns_list, column_dict={
             'idx': ExcelColumn.COL_IDX,
             'name': ExcelColumn.COL_NAME,
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
@@ -36,13 +35,7 @@ class IngredientConverter(Converter):
                                           english_name=json['english_name'],
                                           description=json['description'],
                                           image_url=json['image_url']))
-        i = 3
-        while True:
-            row = sheet1['A{}:AK{}'.format(i, i)][0]
 
-            filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
-            if len(filtered) == 0:
-                break
-            ingredient = parser.parse(row)
-            update_ingredient(ingredient)
-            i += 1
+    def read_line(self, row):
+        ingredient = self.parser.parse(row)
+        update_ingredient(ingredient)

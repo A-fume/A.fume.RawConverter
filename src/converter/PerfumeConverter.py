@@ -16,6 +16,9 @@ from src.converter.Converter import Converter
 class PerfumeConverter(Converter):
     def __init__(self):
         super().__init__("{}_perfumes_raw".format(os.getenv('MYSQL_DB')))
+        self.perfume_parser = None
+        self.default_review_parser = None
+        self.note_parser = None
 
     def get_data_list(self):
         SQLUtil.instance().execute(sql='SELECT p.perfume_idx AS {}, '.format(ExcelColumn.COL_IDX) +
@@ -132,9 +135,7 @@ class PerfumeConverter(Converter):
 
         return perfume_list
 
-    def update_excel(self, excel_file):
-        sheet1 = excel_file.active
-        columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+    def prepare_parser(self, columns_list):
 
         def doTaskPerfume(json) -> Perfume:
             abundance_rate = Perfume.abundance_rate_list.index(
@@ -181,7 +182,7 @@ class PerfumeConverter(Converter):
                    Note.TYPE_SINGLE: parse_note_str(json['single_note_str'], Note.TYPE_SINGLE)}
             return ret
 
-        perfume_parser = ExcelParser(columns_list, {
+        self.perfume_parser = ExcelParser(columns_list, {
             'perfume_idx': ExcelColumn.COL_IDX,
             'name': ExcelColumn.COL_NAME,
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
@@ -191,7 +192,7 @@ class PerfumeConverter(Converter):
             'abundance_rate_str': ExcelColumn.COL_ABUNDANCE_RATE
         }, doTaskPerfume)
 
-        default_review_parser = ExcelParser(columns_list, {
+        self.default_review_parser = ExcelParser(columns_list, {
             'idx': ExcelColumn.COL_IDX,
             'rating': ExcelColumn.COL_DEFAULT_SCORE,
             'seasonal': ExcelColumn.COL_DEFAULT_SEASONAL,
@@ -201,7 +202,7 @@ class PerfumeConverter(Converter):
             'keyword': ExcelColumn.COL_DEFAULT_KEYWORD
         }, doTaskDefaultReview)
 
-        note_parser = ExcelParser(columns_list, {
+        self.note_parser = ExcelParser(columns_list, {
             'perfume_idx': ExcelColumn.COL_IDX,
             'top_note_str': ExcelColumn.COL_TOP_NOTE,
             'middle_note_str': ExcelColumn.COL_MIDDLE_NOTE,
@@ -209,22 +210,13 @@ class PerfumeConverter(Converter):
             'single_note_str': ExcelColumn.COL_SINGLE_NOTE
         }, doTaskNoteList)
 
-        i = 3
+    def read_line(self, row):
+        perfume = self.perfume_parser.parse(row)
+        update_perfume(perfume)
 
-        while True:
-            row = sheet1['A{}:AK{}'.format(i, i)][0]
+        perfumeDefaultReview = self.default_review_parser.parse(row)
+        update_perfume_default_review(perfumeDefaultReview)
 
-            filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
-            if len(filtered) == 0:
-                break
-            i += 1
-
-            perfume = perfume_parser.parse(row)
-            update_perfume(perfume)
-
-            perfumeDefaultReview = default_review_parser.parse(row)
-            update_perfume_default_review(perfumeDefaultReview)
-
-            note_dict = note_parser.parse(row)
-            for note_type, note_list in note_dict.items():
-                update_note_list(perfume_idx=perfume.idx, update_list=note_list, note_type=note_type)
+        note_dict = self.note_parser.parse(row)
+        for note_type, note_list in note_dict.items():
+            update_note_list(perfume_idx=perfume.idx, update_list=note_list, note_type=note_type)

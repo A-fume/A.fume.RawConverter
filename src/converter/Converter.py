@@ -19,10 +19,6 @@ class Converter(metaclass=ABCMeta):
     def get_data_list(self):
         pass
 
-    @abstractmethod
-    def update_excel(self, excel_file):
-        pass
-
     def db2excel(self):
         data_list = self.get_data_list()
 
@@ -53,7 +49,27 @@ class Converter(metaclass=ABCMeta):
         xlxs_dir = os.path.join(BASE_DIR, file_nm)
 
         excel_file = openpyxl.load_workbook(xlxs_dir)
-        self.update_excel(excel_file)
+
+        sheet1 = excel_file.active
+        columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+        self.prepare_parser(columns_list)
+        i = 3
+        while True:
+            row = sheet1['A{}:AK{}'.format(i, i)][0]
+
+            filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
+            if len(filtered) == 0:
+                break
+            self.read_line(row)
+            i += 1
+
+    @abstractmethod
+    def prepare_parser(self, columns_list):
+        pass
+
+    @abstractmethod
+    def read_line(self, row):
+        pass
 
     def do_command(self, command_str):
         SQLUtil.instance().logging = True
