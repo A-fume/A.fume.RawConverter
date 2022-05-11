@@ -1,10 +1,5 @@
 from src.common.data.Brand import Brand
 from src.common.data.Ingredient import Ingredient
-from src.common.data.Note import Note
-from src.common.data.Perfume import Perfume
-from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview
-from src.common.repository import KeywordRepository
-from src.common.repository.IngredientRepository import get_ingredient_idx_by_name
 
 
 class ExcelColumn:
@@ -36,20 +31,9 @@ class ExcelColumn:
 
 CELL_COLOR_NONE = '00000000'
 CELL_COLOR_UPDATE = 'FFFFFF00'
+CELL_COLOR_SKIP = 'FFFFC000'
 CELL_COLOR_DELETED = 'FF'
 CELL_COLOR_ADDED = 'FF'
-
-
-def parse_note_str(note_str: str, perfume_idx: int, note_type: int) -> [Note]:
-    note_list = []
-
-    ingredient_list = [it.strip() for it in note_str.split(',')]
-
-    for ingredient_name in ingredient_list:
-        ingredient_idx = get_ingredient_idx_by_name(ingredient_name)
-        note_list.append(Note(perfume_idx=perfume_idx, ingredient_idx=ingredient_idx, type=note_type))
-
-    return note_list
 
 
 def get_idx(columns_list, column):
@@ -67,6 +51,8 @@ def get_changed_cell_value(row, column_list: [str], column: str):
 
 def get_cell_value(cell):
     if cell.fill.start_color.rgb == CELL_COLOR_NONE:
+        return None
+    if cell.fill.start_color.rgb == CELL_COLOR_SKIP:
         return None
     if cell.fill.start_color.rgb == CELL_COLOR_UPDATE:
         return cell.value
@@ -116,58 +102,3 @@ class ExcelParser:
         image_url = get_changed_cell_value(row, column_list, ExcelColumn.COL_IMAGE_URL)
         return Brand(brand_idx=idx, name=name, english_name=english_name, first_initial=first_initial,
                      description=description, image_url=image_url)
-
-    @staticmethod
-    def get_perfume(row: [str], column_list: [str]) -> Perfume:
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        name = get_changed_cell_value(row, column_list, ExcelColumn.COL_NAME)
-        english_name = get_changed_cell_value(row, column_list, ExcelColumn.COL_ENGLISH_NAME)
-        image_url = get_changed_cell_value(row, column_list, ExcelColumn.COL_MAIN_IMAGE)
-        story = get_changed_cell_value(row, column_list, ExcelColumn.COL_STORY)
-        volume_and_price = get_changed_cell_value(row, column_list, ExcelColumn.COL_VOLUME_AND_PRICE)
-        abundance_rate_str = get_changed_cell_value(row, column_list, ExcelColumn.COL_ABUNDANCE_RATE)
-
-        abundance_rate = Perfume.abundance_rate_list.index(
-            abundance_rate_str) if abundance_rate_str is not None else None
-        if abundance_rate == -1:
-            raise RuntimeError("abundance_rate_str is not invalid: " + abundance_rate_str)
-        return Perfume(idx=idx, name=name, english_name=english_name, image_url=image_url, story=story,
-                       volume_and_price=volume_and_price, abundance_rate=abundance_rate)
-
-    @staticmethod
-    def get_perfumeDefaultReview(row: [str], column_list: [str]) -> PerfumeDefaultReview:
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        rating = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_SCORE)
-        seasonal = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_SEASONAL)
-        sillage = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_SILLAGE)
-        longevity = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_LONGEVITY)
-        gender = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_GENDER)
-        keyword = get_changed_cell_value(row, column_list, ExcelColumn.COL_DEFAULT_KEYWORD)
-        if keyword is not None:
-            keyword_list = list(filter(lambda x: len(x) > 0, keyword.split(',')) if keyword is not None else [])
-            for it in keyword_list:
-                if it.isnumeric():
-                    KeywordRepository.get_keyword_by_idx(int(it))
-                else:
-                    KeywordRepository.get_keyword_idx_by_name(it)
-            keyword = ",".join(keyword_list)
-        return PerfumeDefaultReview(idx=idx, rating=rating, seasonal=seasonal, sillage=sillage, longevity=longevity,
-                                    gender=gender, keyword=keyword)
-
-    @staticmethod
-    def get_note_list(row: [str], column_list: [str]) -> any:
-        perfume_idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-
-        top_note_str = get_changed_cell_value(row, column_list, ExcelColumn.COL_TOP_NOTE)
-        top_note_list = parse_note_str(top_note_str, perfume_idx, Note.TYPE_TOP)
-
-        middle_note_str = get_changed_cell_value(row, column_list, ExcelColumn.COL_MIDDLE_NOTE)
-        middle_note_list = parse_note_str(middle_note_str, perfume_idx, Note.TYPE_MIDDLE)
-
-        base_note_str = get_changed_cell_value(row, column_list, ExcelColumn.COL_BASE_NOTE)
-        base_note_list = parse_note_str(base_note_str, perfume_idx, Note.TYPE_BASE)
-
-        single_note_str = get_changed_cell_value(row, column_list, ExcelColumn.COL_SINGLE_NOTE)
-        single_note_list = parse_note_str(single_note_str, perfume_idx, Note.TYPE_SINGLE)
-
-        return {top_note_list, middle_note_list, base_note_list, single_note_list}

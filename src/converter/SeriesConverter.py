@@ -31,7 +31,9 @@ class SeriesConverter(Converter):
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
             'image_url': ExcelColumn.COL_IMAGE_URL,
             'description': ExcelColumn.COL_DESCRIPTION
-        }, None)
+        }, lambda result_json: Series(series_idx=result_json['series_idx'], name=result_json['name'],
+                                      english_name=result_json['english_name'], image_url=result_json['image_url'],
+                                      description=result_json['description']))
 
         i = 3
         while True:
@@ -41,9 +43,6 @@ class SeriesConverter(Converter):
             if len(filtered) == 0:
                 break
             i += 1
-            result_json = parser.parse(row)
-            series = Series(series_idx=result_json['series_idx'], name=result_json['name'],
-                            english_name=result_json['english_name'], image_url=result_json['image_url'],
-                            description=result_json['description'])
+            series = parser.parse(row)
             update_series(series)
         pass

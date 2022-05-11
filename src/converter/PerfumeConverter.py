@@ -2,24 +2,15 @@ import os
 
 from src.common.data.Note import Note
 from src.common.data.Perfume import Perfume
+from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview
+from src.common.repository import KeywordRepository
+from src.common.repository.IngredientRepository import get_ingredient_idx_by_name
 from src.common.repository.KeywordRepository import get_keyword_by_idx
 from src.common.repository.NoteRepository import update_note_list
 from src.common.repository.PerfumeRepository import update_perfume_default_review, update_perfume
 from src.common.repository.SQLUtil import SQLUtil
 from src.common.util.ExcelParser import ExcelColumn, ExcelParser
 from src.converter.Converter import Converter
-
-
-def update_note(row, column_list):
-    perfume_idx = row[ExcelParser.get_idx(column_list, ExcelColumn.COL_IDX)].value
-    top_note_list, middle_note_list, single_note_list, base_note_list = ExcelParser.get_note_list(row, column_list)
-
-    update_note_list(perfume_idx=perfume_idx, update_list=top_note_list, note_type=Note.TYPE_TOP)
-    update_note_list(perfume_idx=perfume_idx, update_list=middle_note_list, note_type=Note.TYPE_MIDDLE)
-    update_note_list(perfume_idx=perfume_idx, update_list=base_note_list, note_type=Note.TYPE_BASE)
-    update_note_list(perfume_idx=perfume_idx, update_list=single_note_list, note_type=Note.TYPE_SINGLE)
-
-    return
 
 
 class PerfumeConverter(Converter):
@@ -144,6 +135,80 @@ class PerfumeConverter(Converter):
     def update_excel(self, excel_file):
         sheet1 = excel_file.active
         columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+
+        def doTaskPerfume(json) -> Perfume:
+            abundance_rate = Perfume.abundance_rate_list.index(
+                json['abundance_rate_str']) if json['abundance_rate_str'] is not None else None
+            if abundance_rate == -1:
+                raise RuntimeError("abundance_rate_str is not invalid: " + json['abundance_rate_str'])
+            return Perfume(idx=json['perfume_idx'], name=json['name'], english_name=json['english_name'],
+                           image_url=json['image_url'], story=json['story'],
+                           volume_and_price=json['volume_and_price'], abundance_rate=abundance_rate)
+
+        def doTaskDefaultReview(json) -> PerfumeDefaultReview:
+            if json['keyword'] is not None:
+                keyword_list = list(
+                    filter(lambda x: len(x) > 0, json['keyword'].split(',')) if json['keyword'] is not None else [])
+                for it in keyword_list:
+                    if it.isnumeric():
+                        KeywordRepository.get_keyword_by_idx(int(it))
+                    else:
+                        KeywordRepository.get_keyword_idx_by_name(it)
+                json['keyword'] = ",".join(keyword_list)
+            return PerfumeDefaultReview(idx=json['idx'], rating=json['rating'], seasonal=json['seasonal'],
+                                        sillage=json['sillage'], longevity=json['longevity'],
+                                        gender=json['gender'], keyword=json['keyword'])
+
+        def doTaskNoteList(json) -> dict:
+            perfume_idx = json['perfume_idx']
+
+            def parse_note_str(note_str: str, note_type: int) -> [Note]:
+                if note_str is None:
+                    return []
+
+                note_list = []
+                ingredient_list = [it.strip() for it in note_str.split(',')]
+
+                for ingredient_name in ingredient_list:
+                    ingredient_idx = get_ingredient_idx_by_name(ingredient_name)
+                    note_list.append(Note(perfume_idx=perfume_idx, ingredient_idx=ingredient_idx, type=note_type))
+
+                return note_list
+
+            ret = {Note.TYPE_TOP: parse_note_str(json['top_note_str'], Note.TYPE_TOP),
+                   Note.TYPE_MIDDLE: parse_note_str(json['middle_note_str'], Note.TYPE_MIDDLE),
+                   Note.TYPE_BASE: parse_note_str(json['base_note_str'], Note.TYPE_BASE),
+                   Note.TYPE_SINGLE: parse_note_str(json['single_note_str'], Note.TYPE_SINGLE)}
+            return ret
+
+        perfume_parser = ExcelParser(columns_list, {
+            'perfume_idx': ExcelColumn.COL_IDX,
+            'name': ExcelColumn.COL_NAME,
+            'english_name': ExcelColumn.COL_ENGLISH_NAME,
+            'image_url': ExcelColumn.COL_MAIN_IMAGE,
+            'story': ExcelColumn.COL_STORY,
+            'volume_and_price': ExcelColumn.COL_VOLUME_AND_PRICE,
+            'abundance_rate_str': ExcelColumn.COL_ABUNDANCE_RATE
+        }, doTaskPerfume)
+
+        default_review_parser = ExcelParser(columns_list, {
+            'idx': ExcelColumn.COL_IDX,
+            'rating': ExcelColumn.COL_DEFAULT_SCORE,
+            'seasonal': ExcelColumn.COL_DEFAULT_SEASONAL,
+            'sillage': ExcelColumn.COL_DEFAULT_SILLAGE,
+            'longevity': ExcelColumn.COL_DEFAULT_LONGEVITY,
+            'gender': ExcelColumn.COL_DEFAULT_GENDER,
+            'keyword': ExcelColumn.COL_DEFAULT_KEYWORD
+        }, doTaskDefaultReview)
+
+        note_parser = ExcelParser(columns_list, {
+            'perfume_idx': ExcelColumn.COL_IDX,
+            'top_note_str': ExcelColumn.COL_TOP_NOTE,
+            'middle_note_str': ExcelColumn.COL_MIDDLE_NOTE,
+            'base_note_str': ExcelColumn.COL_BASE_NOTE,
+            'single_note_str': ExcelColumn.COL_SINGLE_NOTE
+        }, doTaskNoteList)
+
         i = 3
 
         while True:
@@ -154,10 +219,12 @@ class PerfumeConverter(Converter):
                 break
             i += 1
 
-            perfume = ExcelParser.get_perfume(row, columns_list)
+            perfume = perfume_parser.parse(row)
             update_perfume(perfume)
 
-            perfumeDefaultReview = ExcelParser.get_perfumeDefaultReview(row, columns_list)
+            perfumeDefaultReview = default_review_parser.parse(row)
             update_perfume_default_review(perfumeDefaultReview)
 
-            update_note(row, columns_list)
+            note_dict = note_parser.parse(row)
+            for note_type, note_list in note_dict.items():
+                update_note_list(perfume_idx=perfume.idx, update_list=note_list, note_type=note_type)
