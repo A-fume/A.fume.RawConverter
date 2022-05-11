@@ -34,8 +34,8 @@ class ExcelColumn:
     COL_SERIES_NAME = "계열_이름"
 
 
-CELL_COLOR_NONE = '000000000'
-CELL_COLOR_UPDATE = 'FFFFC000'
+CELL_COLOR_NONE = '00000000'
+CELL_COLOR_UPDATE = 'FFFFFF00'
 CELL_COLOR_DELETED = 'FF'
 CELL_COLOR_ADDED = 'FF'
 
@@ -59,23 +59,42 @@ def get_idx(columns_list, column):
     return _idx
 
 
-def get_cell_value(row: [any], column_list: [str], column: str) -> any:
-    idx = get_idx(column_list, column)
-    return row[idx].value
-
-
 def get_changed_cell_value(row, column_list: [str], column: str):
     idx = get_idx(column_list, column)
     cell = row[idx]
+    return get_cell_value(cell)
+
+
+def get_cell_value(cell):
     if cell.fill.start_color.rgb == CELL_COLOR_NONE:
         return None
     if cell.fill.start_color.rgb == CELL_COLOR_UPDATE:
         return cell.value
-
-    raise RuntimeError("Unexpected cell background color {}".format(cell.fill.start_color))
+    raise RuntimeError("Unexpected cell background color {}".format(cell.fill.start_color.rgb))
 
 
 class ExcelParser:
+
+    def __init__(self, columns_list: [str], column_dict: dict, doTask: any):
+        self.columns_list = columns_list
+        self.columns_idx_dict = {
+            prop: columns_list.index(column)
+            for prop, column in column_dict.items()
+        }
+        self.doTask = doTask
+
+    def get_json(self, row: [str]) -> any:
+        ret = {}
+        for prop, idx in self.columns_idx_dict.items():
+            cell = row[idx]
+            ret[prop] = get_cell_value(cell) if idx != 1 else cell.value
+        return ret
+
+    def parse(self, row: [str]) -> any:
+        json = self.get_json(row)
+        if self.doTask:
+            json = self.doTask(json)
+        return json
 
     @staticmethod
     def get_ingredient(row: [str], column_list: [str]) -> Ingredient:

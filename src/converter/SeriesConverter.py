@@ -1,7 +1,9 @@
 import os
 
+from src.common.data.Series import Series
 from src.common.repository.SQLUtil import SQLUtil
-from src.common.util.ExcelParser import ExcelColumn
+from src.common.repository.SeriesRepository import update_series
+from src.common.util.ExcelParser import ExcelColumn, ExcelParser
 from src.converter.Converter import Converter
 
 
@@ -20,4 +22,28 @@ class SeriesConverter(Converter):
         return SQLUtil.instance().fetchall()
 
     def update_excel(self, excel_file):
+        sheet1 = excel_file.active
+        columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+
+        parser = ExcelParser(columns_list, {
+            'series_idx': ExcelColumn.COL_IDX,
+            'name': ExcelColumn.COL_NAME,
+            'english_name': ExcelColumn.COL_ENGLISH_NAME,
+            'image_url': ExcelColumn.COL_IMAGE_URL,
+            'description': ExcelColumn.COL_DESCRIPTION
+        }, None)
+
+        i = 3
+        while True:
+            row = sheet1['A{}:AK{}'.format(i, i)][0]
+
+            filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
+            if len(filtered) == 0:
+                break
+            i += 1
+            result_json = parser.parse(row)
+            series = Series(series_idx=result_json['series_idx'], name=result_json['name'],
+                            english_name=result_json['english_name'], image_url=result_json['image_url'],
+                            description=result_json['description'])
+            update_series(series)
         pass
