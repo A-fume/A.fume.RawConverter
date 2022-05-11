@@ -1,7 +1,3 @@
-from src.common.data.Brand import Brand
-from src.common.data.Ingredient import Ingredient
-
-
 class ExcelColumn:
     COL_IDX = 'idx'
     COL_NAME = '이름'
@@ -36,29 +32,6 @@ CELL_COLOR_DELETED = 'FF'
 CELL_COLOR_ADDED = 'FF'
 
 
-def get_idx(columns_list, column):
-    _idx = columns_list.index(column)
-    if _idx == -1:
-        raise Exception("Error Exception")
-    return _idx
-
-
-def get_changed_cell_value(row, column_list: [str], column: str):
-    idx = get_idx(column_list, column)
-    cell = row[idx]
-    return get_cell_value(cell)
-
-
-def get_cell_value(cell):
-    if cell.fill.start_color.rgb == CELL_COLOR_NONE:
-        return None
-    if cell.fill.start_color.rgb == CELL_COLOR_SKIP:
-        return None
-    if cell.fill.start_color.rgb == CELL_COLOR_UPDATE:
-        return cell.value
-    raise RuntimeError("Unexpected cell background color {}".format(cell.fill.start_color.rgb))
-
-
 class ExcelParser:
 
     def __init__(self, columns_list: [str], column_dict: dict, doTask: any):
@@ -73,7 +46,7 @@ class ExcelParser:
         ret = {}
         for prop, idx in self.columns_idx_dict.items():
             cell = row[idx]
-            ret[prop] = get_cell_value(cell) if idx != 1 else cell.value
+            ret[prop] = self.get_cell_value(cell) if idx != 1 else cell.value
         return ret
 
     def parse(self, row: [str]) -> any:
@@ -82,13 +55,11 @@ class ExcelParser:
             json = self.doTask(json)
         return json
 
-    @staticmethod
-    def get_brand(row: [str], column_list: [str]) -> Brand:
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        name = get_changed_cell_value(row, column_list, ExcelColumn.COL_NAME)
-        english_name = get_changed_cell_value(row, column_list, ExcelColumn.COL_ENGLISH_NAME)
-        first_initial = get_changed_cell_value(row, column_list, ExcelColumn.COL_FIRST_INITIAL)
-        description = get_changed_cell_value(row, column_list, ExcelColumn.COL_DESCRIPTION)
-        image_url = get_changed_cell_value(row, column_list, ExcelColumn.COL_IMAGE_URL)
-        return Brand(brand_idx=idx, name=name, english_name=english_name, first_initial=first_initial,
-                     description=description, image_url=image_url)
+    def get_cell_value(self, cell):
+        if cell.fill.start_color.rgb == CELL_COLOR_NONE:
+            return None
+        if cell.fill.start_color.rgb == CELL_COLOR_SKIP:
+            return None
+        if cell.fill.start_color.rgb == CELL_COLOR_UPDATE:
+            return cell.value
+        raise RuntimeError("Unexpected cell background color {}".format(cell.fill.start_color.rgb))

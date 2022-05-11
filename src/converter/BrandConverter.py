@@ -24,6 +24,18 @@ class BrandConverter(Converter):
     def update_excel(self, excel_file):
         sheet1 = excel_file.active
         columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+
+        parser = ExcelParser(columns_list=columns_list, column_dict={
+            'idx': ExcelColumn.COL_IDX,
+            'name': ExcelColumn.COL_NAME,
+            'english_name': ExcelColumn.COL_ENGLISH_NAME,
+            'first_initial': ExcelColumn.COL_FIRST_INITIAL,
+            'description': ExcelColumn.COL_DESCRIPTION,
+            'image_url': ExcelColumn.COL_IMAGE_URL
+        }, doTask=lambda json: Brand(brand_idx=json['idx'], name=json['name'], english_name=json['english_name'],
+                                     first_initial=json['first_initial'],
+                                     description=json['description'], image_url=json['image_url']))
+
         i = 3
 
         while True:
@@ -32,6 +44,6 @@ class BrandConverter(Converter):
             filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
             if len(filtered) == 0:
                 break
-            brand = ExcelParser.get_brand(row, columns_list)
+            brand = parser.parse(row)
             update_brand(brand)
             i += 1
