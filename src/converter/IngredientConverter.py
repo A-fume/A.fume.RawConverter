@@ -26,14 +26,23 @@ class IngredientConverter(Converter):
     def update_excel(self, excel_file):
         sheet1 = excel_file.active
         columns_list = [cell.value for cell in sheet1['A2:AK2'][0]]
+        parser = ExcelParser(columns_list=columns_list, column_dict={
+            'idx': ExcelColumn.COL_IDX,
+            'name': ExcelColumn.COL_NAME,
+            'english_name': ExcelColumn.COL_ENGLISH_NAME,
+            'description': ExcelColumn.COL_DESCRIPTION,
+            'image_url': ExcelColumn.COL_IMAGE_URL
+        }, doTask=lambda json: Ingredient(ingredient_idx=json['idx'], name=json['name'],
+                                          english_name=json['english_name'],
+                                          description=json['description'],
+                                          image_url=json['image_url']))
         i = 3
-
         while True:
             row = sheet1['A{}:AK{}'.format(i, i)][0]
 
             filtered = list(filter(lambda x: x is not None and len(str(x)) > 0, [cell.value for cell in row]))
             if len(filtered) == 0:
                 break
-            ingredient = ExcelParser.get_ingredient(row, columns_list)
+            ingredient = parser.parse(row)
             update_ingredient(ingredient)
             i += 1

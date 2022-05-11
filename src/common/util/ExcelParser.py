@@ -83,16 +83,6 @@ class ExcelParser:
         return json
 
     @staticmethod
-    def get_ingredient(row: [str], column_list: [str]) -> Ingredient:
-        idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
-        name = get_changed_cell_value(row, column_list, ExcelColumn.COL_NAME)
-        english_name = get_changed_cell_value(row, column_list, ExcelColumn.COL_ENGLISH_NAME)
-        description = get_changed_cell_value(row, column_list, ExcelColumn.COL_DESCRIPTION)
-        image_url = get_changed_cell_value(row, column_list, ExcelColumn.COL_IMAGE_URL)
-        return Ingredient(ingredient_idx=idx, name=name, english_name=english_name, description=description,
-                          image_url=image_url)
-
-    @staticmethod
     def get_brand(row: [str], column_list: [str]) -> Brand:
         idx = row[get_idx(column_list, ExcelColumn.COL_IDX)].value
         name = get_changed_cell_value(row, column_list, ExcelColumn.COL_NAME)
