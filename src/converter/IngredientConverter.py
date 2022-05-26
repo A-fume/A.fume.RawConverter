@@ -30,11 +30,13 @@ class IngredientConverter(Converter):
             'name': ExcelColumn.COL_NAME,
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
             'description': ExcelColumn.COL_DESCRIPTION,
-            'image_url': ExcelColumn.COL_IMAGE_URL
+            'image_url': ExcelColumn.COL_IMAGE_URL,
+            'series_idx': ExcelColumn.COL_SERIES_IDX
         }, doTask=lambda json: Ingredient(ingredient_idx=json['idx'], name=json['name'],
                                           english_name=json['english_name'],
                                           description=json['description'],
-                                          image_url=json['image_url']))
+                                          image_url=json['image_url'],
+                                          series_idx=json['series_idx']))
 
     def read_line(self, row):
         ingredient = self.parser.parse(row)
