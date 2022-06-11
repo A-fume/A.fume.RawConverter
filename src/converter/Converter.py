@@ -5,6 +5,7 @@ import openpyxl
 import pandas as pd
 from dotenv import load_dotenv
 
+from src.Config import Config
 from src.common.Strings import CommandStr
 from src.common.repository.SQLUtil import SQLUtil
 
@@ -78,6 +79,9 @@ class Converter(metaclass=ABCMeta):
             self.db2excel()
         elif command_str == CommandStr.excel2db:
             self.excel2db()
-            SQLUtil.instance().commit()
+            if Config.instance().DEBUG:
+                SQLUtil.instance().rollback()
+            else:
+                SQLUtil.instance().commit()
         else:
             raise RuntimeError('Unknown Command')
