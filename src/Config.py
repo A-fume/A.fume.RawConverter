@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 
+from src.common.Strings import CommandInfo
+
 
 def getenvNonNull(key) -> any:
     x = os.getenv(key)
@@ -26,6 +28,13 @@ class Config:
         self.INPUT_DIR_PATH = os.getenv('INPUT_DIR_PATH') or './input'
         self.OUTPUT_DIR_PATH = os.getenv('OUTPUT_DIR_PATH') or './output'
         self.DEBUG = os.getenv('DEBUG') or True
+        self.TARGET = os.getenv('TARGET') or '*'
+        self.COMMAND = getenvNonNull('COMMAND')
+
+    def get_target_list(self) -> [str]:
+        if self.TARGET == '*':
+            return [CommandInfo.brand, CommandInfo.series, CommandInfo.perfume, CommandInfo.ingredient]
+        return self.TARGET.split(',')
 
     __instance = None
 

@@ -1,6 +1,7 @@
 from typing import Dict
 
-from src.common.Strings import CommandInfo, CommandStr
+from src.Config import Config
+from src.common.Strings import CommandInfo
 from src.converter.BrandConverter import BrandConverter
 from src.converter.Converter import Converter
 from src.converter.IngredientConverter import IngredientConverter
@@ -15,12 +16,7 @@ converter_map: Dict[str, Converter] = {
 }
 
 
-def main(name, command_str):
-    if '*' == name:
-        for key in converter_map.keys():
-            converter_map[key].do_command(command_str)
-        return
-
+def execute(name, command_str):
     converter = converter_map[name]
     converter.do_command(command_str)
 
