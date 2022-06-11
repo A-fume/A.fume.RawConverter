@@ -22,4 +22,7 @@ def execute(name, command_str):
 
 
 if __name__ == '__main__':
-    main(CommandInfo.ingredient, CommandStr.db2excel)
+    command = Config.instance().COMMAND
+    target_list = Config.instance().get_target_list()
+    for target in target_list:
+        execute(target, command)
