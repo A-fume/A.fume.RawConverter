@@ -1,4 +1,4 @@
-from src.Config import Config
+from Config import Config
 from src.common.data.Series import Series
 from src.common.repository.SQLUtil import SQLUtil
 from src.common.repository.SeriesRepository import update_series

@@ -1,4 +1,4 @@
-from src.Config import Config
+from Config import Config
 from src.common.data.Note import Note
 from src.common.data.Perfume import Perfume
 from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview

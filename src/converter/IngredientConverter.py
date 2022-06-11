@@ -1,4 +1,4 @@
-from src.Config import Config
+from Config import Config
 from src.common.data.Ingredient import Ingredient
 from src.common.repository.IngredientRepository import update_ingredient
 from src.common.repository.SQLUtil import SQLUtil

@@ -1,6 +1,6 @@
 from typing import Dict
 
-from src.Config import Config
+from Config import Config
 from src.common.Strings import CommandInfo
 from src.converter.BrandConverter import BrandConverter
 from src.converter.Converter import Converter
@@ -21,7 +21,7 @@ def execute(name, command_str):
     converter.do_command(command_str)
 
 
-if __name__ == '__main__':
+def run():
     command = Config.instance().COMMAND
     target_list = Config.instance().get_target_list()
     for target in target_list:

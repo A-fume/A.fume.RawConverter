@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 import openpyxl
 import pandas as pd
 
-from src.Config import Config
+from Config import Config
 from src.common.Strings import CommandStr
 from src.common.repository.SQLUtil import SQLUtil
 

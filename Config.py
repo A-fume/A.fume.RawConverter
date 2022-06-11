@@ -15,9 +15,7 @@ class Config:
 
     def __init__(self):
         import os
-
-        BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-        load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../.env'), verbose=True)
+        load_dotenv()
 
         self.MYSQL_USER = getenvNonNull('MYSQL_USER')
         self.MYSQL_PASSWD = getenvNonNull('MYSQL_PASSWD')

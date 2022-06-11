@@ -1,5 +1,5 @@
 import pymysql
-from src.Config import Config
+from Config import Config
 
 
 class SQLUtil:

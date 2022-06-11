@@ -1,4 +1,4 @@
-from src.Config import Config
+from Config import Config
 from src.common.data.Brand import Brand
 from src.common.repository.BrandRepository import update_brand
 from src.common.repository.SQLUtil import SQLUtil
