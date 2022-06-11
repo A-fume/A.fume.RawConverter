@@ -4,7 +4,7 @@ from src.common.data.Perfume import Perfume
 from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview
 from src.common.repository import KeywordRepository
 from src.common.repository.IngredientRepository import get_ingredient_idx_by_name
-from src.common.repository.KeywordRepository import get_keyword_by_idx
+from src.common.repository.KeywordRepository import get_keywords_by_idx_list
 from src.common.repository.NoteRepository import update_note_list
 from src.common.repository.PerfumeRepository import update_perfume_default_review, update_perfume
 from src.common.repository.SQLUtil import SQLUtil
@@ -127,9 +127,8 @@ class PerfumeConverter(Converter):
             # print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
             keyword_idx_list = list(filter(lambda x: len(x) > 0, perfume[ExcelColumn.COL_DEFAULT_KEYWORD].split(",")))
             # print(keyword_idx_list)
-            perfume[ExcelColumn.COL_DEFAULT_KEYWORD] = ', '.join(
-                [get_keyword_by_idx(keyword_idx)['name'] for keyword_idx in
-                 keyword_idx_list]) if len(keyword_idx_list) > 0 else ''
+            perfume[ExcelColumn.COL_DEFAULT_KEYWORD] = get_keywords_by_idx_list(keyword_idx_list) if len(
+                keyword_idx_list) > 0 else ''
             # print(perfume[ExcelColumn.COL_DEFAULT_KEYWORD])
 
         return perfume_list

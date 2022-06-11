@@ -19,6 +19,13 @@ def get_keyword_by_idx(keyword_idx):
     return result[0]
 
 
+def get_keywords_by_idx_list(keyword_idx_list) -> str:
+    sql = "SELECT name FROM keywords WHERE id IN ({})".format(','.join(map(str, keyword_idx_list)))
+    SQLUtil.instance().execute(sql=sql)
+    result = SQLUtil.instance().fetchall()
+    return ','.join(map(lambda x: x['name'], result))
+
+
 def main():
     SQLUtil.instance().logging = True
     idx = get_keyword_idx_by_name('톡 쏘는')
