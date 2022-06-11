@@ -1,5 +1,6 @@
 from typing import Dict
 
+from src.common.Strings import CommandInfo, CommandStr
 from src.converter.BrandConverter import BrandConverter
 from src.converter.Converter import Converter
 from src.converter.IngredientConverter import IngredientConverter
@@ -7,10 +8,10 @@ from src.converter.PerfumeConverter import PerfumeConverter
 from src.converter.SeriesConverter import SeriesConverter
 
 converter_map: Dict[str, Converter] = {
-    'ingredient_info': IngredientConverter(),
-    'perfume_info': PerfumeConverter(),
-    'brand_info': BrandConverter(),
-    'series_info': SeriesConverter()
+    CommandInfo.ingredient: IngredientConverter(),
+    CommandInfo.perfume: PerfumeConverter(),
+    CommandInfo.brand: BrandConverter(),
+    CommandInfo.series: SeriesConverter()
 }
 
 
@@ -25,4 +26,4 @@ def main(name, command_str):
 
 
 if __name__ == '__main__':
-    main('series_info', 'db2excel')
+    main(CommandInfo.ingredient, CommandStr.db2excel)

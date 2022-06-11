@@ -5,6 +5,7 @@ import openpyxl
 import pandas as pd
 from dotenv import load_dotenv
 
+from src.common.Strings import CommandStr
 from src.common.repository.SQLUtil import SQLUtil
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -73,9 +74,9 @@ class Converter(metaclass=ABCMeta):
 
     def do_command(self, command_str):
         SQLUtil.instance().logging = True
-        if command_str == "db2excel":
+        if command_str == CommandStr.db2excel:
             self.db2excel()
-        elif command_str == "excel2db":
+        elif command_str == CommandStr.excel2db:
             self.excel2db()
             SQLUtil.instance().commit()
         else:

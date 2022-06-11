@@ -15,11 +15,11 @@ class IngredientConverter(Converter):
 
     def get_data_list(self):
         SQLUtil.instance().execute(
-            sql="SELECT i.ingredient_idx AS {}, i.name AS {}, i.english_name AS {}, i.description AS {}, "
-                "i.image_url AS {}, i.series_idx AS {}, s.name AS `[{}]` "
+            sql="SELECT i.ingredient_idx AS {}, i.name AS {}, i.english_name AS {}, i.category AS {}, "
+                "i.description AS {}, i.image_url AS {}, i.series_idx AS {}, s.name AS `[{}]` "
                 "FROM ingredients i INNER JOIN series s ON s.series_idx = i.series_idx ORDER BY i.ingredient_idx"
                 .format(ExcelColumn.COL_IDX, ExcelColumn.COL_NAME, ExcelColumn.COL_ENGLISH_NAME,
-                        ExcelColumn.COL_DESCRIPTION, ExcelColumn.COL_IMAGE_URL,
+                        ExcelColumn.COL_CATEGORY, ExcelColumn.COL_DESCRIPTION, ExcelColumn.COL_IMAGE_URL,
                         ExcelColumn.COL_SERIES_IDX, ExcelColumn.COL_SERIES_NAME))
 
         return SQLUtil.instance().fetchall()
@@ -29,12 +29,14 @@ class IngredientConverter(Converter):
             'idx': ExcelColumn.COL_IDX,
             'name': ExcelColumn.COL_NAME,
             'english_name': ExcelColumn.COL_ENGLISH_NAME,
+            'category': ExcelColumn.COL_CATEGORY,
             'description': ExcelColumn.COL_DESCRIPTION,
             'image_url': ExcelColumn.COL_IMAGE_URL,
             'series_idx': ExcelColumn.COL_SERIES_IDX
         }, doTask=lambda json: Ingredient(ingredient_idx=json['idx'], name=json['name'],
                                           english_name=json['english_name'],
                                           description=json['description'],
+                                          category=json['category'],
                                           image_url=json['image_url'],
                                           series_idx=json['series_idx']))
 
