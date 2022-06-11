@@ -1,5 +1,4 @@
-import os
-
+from src.Config import Config
 from src.common.data.Series import Series
 from src.common.repository.SQLUtil import SQLUtil
 from src.common.repository.SeriesRepository import update_series
@@ -10,7 +9,7 @@ from src.converter.Converter import Converter
 class SeriesConverter(Converter):
 
     def __init__(self):
-        super().__init__("{}_series_raw".format(os.getenv('MYSQL_DB')))
+        super().__init__("{}_series_raw".format(Config.instance().MYSQL_DB))
         self.parser = None
 
     def get_data_list(self):

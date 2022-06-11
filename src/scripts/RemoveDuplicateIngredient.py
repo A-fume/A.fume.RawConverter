@@ -1,11 +1,4 @@
-import os
-
-from dotenv import load_dotenv
-
 from src.common.repository.SQLUtil import SQLUtil
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
 
 
 def substitute(ingredient_idx, substitute_ingredient_idx):

@@ -3,14 +3,10 @@ from abc import abstractmethod, ABCMeta
 
 import openpyxl
 import pandas as pd
-from dotenv import load_dotenv
 
 from src.Config import Config
 from src.common.Strings import CommandStr
 from src.common.repository.SQLUtil import SQLUtil
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
 
 
 class Converter(metaclass=ABCMeta):
@@ -27,11 +23,11 @@ class Converter(metaclass=ABCMeta):
         result = pd.DataFrame(data_list)
         print(result)
 
-        if os.path.exists('../output') is False:
-            os.makedirs('../output')
+        if os.path.exists(Config.instance().OUTPUT_DIR_PATH) is False:
+            os.makedirs(Config.instance().OUTPUT_DIR_PATH)
 
-        file_nm = "../../output/{}.xlsx".format(self.name)
-        xlxs_dir = os.path.join(BASE_DIR, file_nm)
+        file_nm = "{}.xlsx".format(self.name)
+        xlxs_dir = os.path.join(Config.instance().OUTPUT_DIR_PATH, file_nm)
 
         result.to_excel(xlxs_dir,
                         sheet_name=self.name,
@@ -47,8 +43,8 @@ class Converter(metaclass=ABCMeta):
                         )
 
     def excel2db(self):
-        file_nm = "../../input/{}.xlsx".format(self.name)
-        xlxs_dir = os.path.join(BASE_DIR, file_nm)
+        file_nm = "{}.xlsx".format(self.name)
+        xlxs_dir = os.path.join(Config.instance().INPUT_DIR_PATH, file_nm)
 
         excel_file = openpyxl.load_workbook(xlxs_dir)
 

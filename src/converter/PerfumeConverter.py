@@ -1,5 +1,4 @@
-import os
-
+from src.Config import Config
 from src.common.data.Note import Note
 from src.common.data.Perfume import Perfume
 from src.common.data.PerfumeDefaultReview import PerfumeDefaultReview
@@ -15,7 +14,7 @@ from src.converter.Converter import Converter
 
 class PerfumeConverter(Converter):
     def __init__(self):
-        super().__init__("{}_perfumes_raw".format(os.getenv('MYSQL_DB')))
+        super().__init__("{}_perfumes_raw".format(Config.instance().MYSQL_DB))
         self.perfume_parser = None
         self.default_review_parser = None
         self.note_parser = None

@@ -1,16 +1,15 @@
-import os
-
+from src.Config import Config
 from src.common.data.Brand import Brand
 from src.common.repository.BrandRepository import update_brand
-from src.converter.Converter import Converter
 from src.common.repository.SQLUtil import SQLUtil
 from src.common.util.ExcelParser import ExcelColumn, ExcelParser
+from src.converter.Converter import Converter
 
 
 class BrandConverter(Converter):
 
     def __init__(self):
-        super().__init__("{}_brands_raw".format(os.getenv('MYSQL_DB')))
+        super().__init__("{}_brands_raw".format(Config.instance().MYSQL_DB))
         self.parser = None
 
     def get_data_list(self):

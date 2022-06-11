@@ -1,5 +1,4 @@
-import os
-
+from src.Config import Config
 from src.common.data.Ingredient import Ingredient
 from src.common.repository.IngredientRepository import update_ingredient
 from src.common.repository.SQLUtil import SQLUtil
@@ -10,7 +9,7 @@ from src.converter.Converter import Converter
 class IngredientConverter(Converter):
 
     def __init__(self):
-        super().__init__("{}_ingredients_raw".format(os.getenv('MYSQL_DB')))
+        super().__init__("{}_ingredients_raw".format(Config.instance().MYSQL_DB))
         self.parser = None
 
     def get_data_list(self):
