@@ -1,13 +1,6 @@
-import os
-
-from dotenv import load_dotenv
-
 from src.common.data.Perfume import Perfume
 from src.common.repository.PerfumeRepository import update_perfume
 from src.common.repository.SQLUtil import SQLUtil
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
 
 
 def main(perfume_idx_list):
@@ -19,7 +12,6 @@ def main(perfume_idx_list):
 
 
 if __name__ == '__main__':
-    perfume_idx_list = []
     SQLUtil.instance().logging = True
-    main(perfume_idx_list)
+    main([])
     SQLUtil.instance().commit()

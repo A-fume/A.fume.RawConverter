@@ -1,5 +1,5 @@
 import pymysql
-import os
+from src.Config import Config
 
 
 class SQLUtil:
@@ -33,12 +33,12 @@ class SQLUtil:
     @staticmethod
     def get_db():
         db = pymysql.connect(
-            user=os.getenv('MYSQL_USER'),
-            passwd=os.getenv('MYSQL_PASSWD'),
-            host=os.getenv('MYSQL_HOST'),
-            db=os.getenv('MYSQL_DB'),
-            charset=os.getenv('MYSQL_CHARSET'),
-            port=int(os.getenv('MYSQL_PORT')),
+            user=Config.instance().MYSQL_USER,
+            passwd=Config.instance().MYSQL_PASSWD,
+            host=Config.instance().MYSQL_HOST,
+            db=Config.instance().MYSQL_DB,
+            charset=Config.instance().MYSQL_CHARSET,
+            port=Config.instance().MYSQL_PORT,
         )
         return db
 
@@ -60,8 +60,4 @@ class SQLUtil:
 
 
 if __name__ == '__main__':
-    from dotenv import load_dotenv
-
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
     print(SQLUtil.instance().execute(sql='select * from perfumes'))

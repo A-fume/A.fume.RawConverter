@@ -27,12 +27,6 @@ def update_ingredient(ingredient):
 
 
 def main():
-    from dotenv import load_dotenv
-    import os
-
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
-
     SQLUtil.instance().logging = True
     idx = get_ingredient_idx_by_name('그레이프프루트')
     if idx > 0:

@@ -36,12 +36,6 @@ def update_perfume_default_review(perfume_default_review):
 
 
 def main():
-    from dotenv import load_dotenv
-    import os
-
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
-
     SQLUtil.instance().logging = True
 
     testPerfume = Perfume(idx=1, name='154 코롱 조말론 런던',

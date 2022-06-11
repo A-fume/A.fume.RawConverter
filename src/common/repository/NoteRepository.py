@@ -56,12 +56,6 @@ def update_note_list(perfume_idx, note_type, update_list):
 
 
 def main():
-    from dotenv import load_dotenv
-    import os
-
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
-
     SQLUtil.instance().logging = True
 
     result = get_note_list_by_perfume_idx(1, 1)

@@ -20,12 +20,6 @@ def get_keyword_by_idx(keyword_idx):
 
 
 def main():
-    from dotenv import load_dotenv
-    import os
-
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../../.env'), verbose=True)
-
     SQLUtil.instance().logging = True
     idx = get_keyword_idx_by_name('톡 쏘는')
     if idx > 0:
