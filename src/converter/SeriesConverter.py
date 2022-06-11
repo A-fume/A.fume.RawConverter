@@ -34,4 +34,6 @@ class SeriesConverter(Converter):
 
     def read_line(self, row):
         series = self.parser.parse(row)
+        if series.get_json() is None:
+            return
         update_series(series)

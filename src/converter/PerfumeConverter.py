@@ -163,7 +163,7 @@ class PerfumeConverter(Converter):
 
             def parse_note_str(note_str: str, note_type: int) -> [Note]:
                 if note_str is None:
-                    return []
+                    return None
 
                 note_list = []
                 ingredient_list = [it.strip() for it in note_str.split(',')]
@@ -217,4 +217,6 @@ class PerfumeConverter(Converter):
 
         note_dict = self.note_parser.parse(row)
         for note_type, note_list in note_dict.items():
+            if note_list is None:
+                continue
             update_note_list(perfume_idx=perfume.idx, update_list=note_list, note_type=note_type)
