@@ -13,7 +13,7 @@ def update_perfume(perfume):
         return
     json.pop('idx')
     set_condition = ', '.join(['{} = %s'.format(it) for it in json.keys()])
-    values = [json[it] for it in json.keys()]
+    values = [str(json[it]) for it in json.keys()]
 
     sql = 'UPDATE perfumes SET {} WHERE perfume_idx = {}'.format(set_condition, perfume_idx)
     SQLUtil.instance().execute(sql=sql, args=values)
