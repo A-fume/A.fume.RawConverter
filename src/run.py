@@ -30,7 +30,7 @@ def run():
     if command == CommandStr.db2excel:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         out_folder_path = os.path.join(Config.instance().OUTPUT_DIR_PATH, timestamp)
-        os.mkdir(out_folder_path)
+        os.makedirs(out_folder_path)
 
     for target in target_list:
         execute(target, command, out_folder_path)
