@@ -18,7 +18,7 @@ class Converter(metaclass=ABCMeta):
     def get_data_list(self):
         pass
 
-    def db2excel(self):
+    def db2excel(self, out_path: str):
         data_list = self.get_data_list()
 
         result = pd.DataFrame(data_list)
@@ -27,12 +27,8 @@ class Converter(metaclass=ABCMeta):
         if os.path.exists(Config.instance().OUTPUT_DIR_PATH) is False:
             os.makedirs(Config.instance().OUTPUT_DIR_PATH)
 
-        out_dir_nm = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        file_path = os.path.join(Config.instance().OUTPUT_DIR_PATH, out_dir_nm)
-        os.mkdir(file_path)
-
         file_nm = "{}.xlsx".format(self.name)
-        xlxs_dir = os.path.join(file_path, file_nm)
+        xlxs_dir = os.path.join(out_path, file_nm)
 
         result.to_excel(xlxs_dir,
                         sheet_name=self.name,
@@ -74,10 +70,10 @@ class Converter(metaclass=ABCMeta):
     def read_line(self, row):
         pass
 
-    def do_command(self, command_str):
+    def do_command(self, command_str, out_path: str = None):
         SQLUtil.instance().logging = True
         if command_str == CommandStr.db2excel:
-            self.db2excel()
+            self.db2excel(out_path)
         elif command_str == CommandStr.excel2db:
             self.excel2db()
             if Config.instance().DEBUG:
