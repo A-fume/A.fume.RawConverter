@@ -76,9 +76,12 @@ class Converter(metaclass=ABCMeta):
             self.db2excel(out_path)
         elif command_str == CommandStr.excel2db:
             self.excel2db()
+            print(Config.instance().DEBUG)
             if Config.instance().DEBUG:
                 SQLUtil.instance().rollback()
+                print('---rollback---')
             else:
                 SQLUtil.instance().commit()
+                print('---commit---')
         else:
             raise RuntimeError('Unknown Command')

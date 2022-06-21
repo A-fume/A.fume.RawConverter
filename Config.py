@@ -25,7 +25,7 @@ class Config:
         self.MYSQL_PORT = int(getenvNonNull('MYSQL_PORT'))
         self.INPUT_DIR_PATH = os.getenv('INPUT_DIR_PATH') or './input'
         self.OUTPUT_DIR_PATH = os.getenv('OUTPUT_DIR_PATH') or './output'
-        self.DEBUG = os.getenv('DEBUG') or True
+        self.DEBUG = os.getenv('DEBUG').lower() == 'true'
         self.TARGET = os.getenv('TARGET') or '*'
         self.COMMAND = getenvNonNull('COMMAND')
 
