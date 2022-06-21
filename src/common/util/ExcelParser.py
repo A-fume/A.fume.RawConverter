@@ -23,6 +23,7 @@ class ExcelColumn:
     COL_FIRST_INITIAL = '시작 초성'
     COL_SERIES_IDX = "계열_id"
     COL_SERIES_NAME = "계열_이름"
+    COL_CATEGORY = '카테고리'
 
 
 CELL_COLOR_NONE = '00000000'

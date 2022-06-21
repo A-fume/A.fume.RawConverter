@@ -1,12 +1,13 @@
 class Ingredient:
 
-    def __init__(self, ingredient_idx, name, english_name, description, image_url, series_idx):
+    def __init__(self, ingredient_idx, name, english_name, description, image_url, series_idx, category):
         self.ingredient_idx = ingredient_idx
         self.name = name
         self.english_name = english_name
         self.description = description
         self.image_url = image_url
         self.series_idx = series_idx
+        self.category = category
 
     def get_json(self):
         json = {'ingredient_idx': self.ingredient_idx}
@@ -20,6 +21,8 @@ class Ingredient:
             json['image_url'] = self.image_url
         if self.series_idx is not None:
             json['series_idx'] = self.series_idx
+        if self.category is not None:
+            json['category'] = self.category
         if len(json.keys()) == 1:
             return
         return json
@@ -30,12 +33,15 @@ class Ingredient:
                and self.english_name == other.english_name \
                and self.description == other.description \
                and self.image_url == other.image_url \
-               and self.series_idx == other.series_idx
+               and self.series_idx == other.series_idx \
+               and self.category == other.category
 
     def __hash__(self):
         return hash(
-            (self.ingredient_idx, self.name, self.english_name, self.description, self.image_url, self.series_idx))
+            (self.ingredient_idx, self.name, self.english_name, self.description, self.image_url, self.series_idx,
+             self.category))
 
     def __str__(self):
-        return 'Ingredient({}, {}, {}, {}, {}, {})'.format(self.ingredient_idx, self.name, self.english_name,
-                                                           self.description, self.image_url, self.series_idx)
+        return 'Ingredient({}, {}, {}, {}, {}, {}, {})'.format(self.ingredient_idx, self.name, self.english_name,
+                                                               self.description, self.image_url, self.series_idx,
+                                                               self.category)
