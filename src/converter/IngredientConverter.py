@@ -1,5 +1,6 @@
 from Config import Config
 from src.common.data.Ingredient import Ingredient
+from src.common.repository.IngredientCategoryRepository import get_category_idx_by_name
 from src.common.repository.IngredientRepository import update_ingredient
 from src.common.repository.SQLUtil import SQLUtil
 from src.common.util.ExcelParser import ExcelColumn, ExcelParser
@@ -15,11 +16,15 @@ class IngredientConverter(Converter):
     def get_data_list(self):
         SQLUtil.instance().execute(
             sql="SELECT i.ingredient_idx AS {}, i.name AS {}, i.english_name AS {}, "
-                "i.description AS {}, i.image_url AS {}, i.series_idx AS {}, i.category AS {}, s.name AS `[{}]` "
-                "FROM ingredients i INNER JOIN series s ON s.series_idx = i.series_idx ORDER BY i.ingredient_idx"
+                "i.description AS {}, i.image_url AS {}, i.series_idx AS {}, s.name AS `[{}]`,"
+                " ic.name as {} "
+                " FROM ingredients i "
+                " INNER JOIN series s ON s.series_idx = i.series_idx "
+                " LEFT JOIN ingredient_categories ic ON ic.idx = i.category_idx "
+                " ORDER BY i.ingredient_idx"
             .format(ExcelColumn.COL_IDX, ExcelColumn.COL_NAME, ExcelColumn.COL_ENGLISH_NAME,
                     ExcelColumn.COL_DESCRIPTION, ExcelColumn.COL_IMAGE_URL,
-                    ExcelColumn.COL_SERIES_IDX, ExcelColumn.COL_CATEGORY, ExcelColumn.COL_SERIES_NAME))
+                    ExcelColumn.COL_SERIES_IDX, ExcelColumn.COL_SERIES_NAME, ExcelColumn.COL_CATEGORY))
 
         return SQLUtil.instance().fetchall()
 
@@ -37,7 +42,7 @@ class IngredientConverter(Converter):
                                           description=json['description'],
                                           image_url=json['image_url'],
                                           series_idx=json['series_idx'],
-                                          category=json['category']))
+                                          category_idx=get_category_idx_by_name(json['category'])))
 
     def read_line(self, row):
         ingredient = self.parser.parse(row)
